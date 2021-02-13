@@ -42,7 +42,7 @@ class BoardActivity : AppCompatActivity() {
     }
 
     private fun setViewPagerPaging() {
-        val dpValue = 16
+        val dpValue = 14
         val d: Float = resources.displayMetrics.density
         val margin = (dpValue * d).toInt()
         
