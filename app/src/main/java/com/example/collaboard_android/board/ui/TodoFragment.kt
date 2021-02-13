@@ -70,8 +70,8 @@ class TodoFragment : Fragment(), TaskListener {
         // recyclerview dataset 바뀔 때마다 notifyDataSetChanged()
         //adapter.notifyDataSetChanged()
 
-        //emptyTextView.setOnDragListener(adapter.dragInstance)
-        //this.setOnDragListener(adapter.dragInstance)
+        emptyTextView.setOnDragListener(adapter.dragInstance)
+        this.setOnDragListener(adapter.dragInstance)
     }
 
     private val itemTouchHelper by lazy {

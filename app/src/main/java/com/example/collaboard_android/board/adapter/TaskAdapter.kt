@@ -8,6 +8,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.collaboard_android.util.DragListener
 import java.util.*
 
 interface TaskListener {
@@ -43,20 +44,20 @@ class TaskAdapter(private var list: MutableList<TaskData>, private val listener:
         return false
     }
 
-    /*val dragInstance: DragListener?
+    val dragInstance: DragListener?
     get() = if (listener != null) {
         DragListener(listener)
     } else {
         Log.e(javaClass::class.simpleName, "Listener not initialized")
         null
-    }*/
+    }
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
         holder.onBind(list[position])
         holder.constraintLayout.tag = position
         holder.constraintLayout.setOnTouchListener(this)
-        //holder.constraintLayout.setOnDragListener(DragListener(listener!!))
+        holder.constraintLayout.setOnDragListener(DragListener(listener!!))
     }
 
     fun moveItem(from: Int, to: Int) {
