@@ -43,6 +43,15 @@ class TodoFragment : Fragment(), TaskListener {
         itemTouchHelper.attachToRecyclerView(binding.recyclerviewTodo)
 
         initRecyclerView()
+
+        initAddButton()
+    }
+
+    private fun initAddButton() {
+        binding.btnAdd.setOnClickListener {
+            val addTaskDialog = AddTaskDialogFragment()
+            addTaskDialog.show(childFragmentManager, "add_task_dialog")
+        }
     }
 
     private fun initRecyclerView() {
