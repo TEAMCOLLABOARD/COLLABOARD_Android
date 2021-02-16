@@ -5,12 +5,15 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.KeyEvent.KEYCODE_ENTER
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import com.example.collaboard_android.R
@@ -20,6 +23,8 @@ class AddTaskDialogFragment : DialogFragment() {
 
     private var _binding: DialogAddTaskBinding? = null
     private val binding get() = _binding!!
+
+    private var selectLabel = -1
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -37,6 +42,8 @@ class AddTaskDialogFragment : DialogFragment() {
         setKeyListenerOnEditText()
 
         initEditImageButton()
+
+        initLabelSpinner()
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -93,6 +100,31 @@ class AddTaskDialogFragment : DialogFragment() {
         imm.hideSoftInputFromWindow(binding.etDescription.windowToken, 0)
     }
 
+    private fun initLabelSpinner() {
+        val item = resources.getStringArray(R.array.label_array)
+
+        val labelAdapter = ArrayAdapter(context!!, R.layout.item_label_spinner, item)
+        binding.spinnerLabel.adapter = labelAdapter
+
+        binding.spinnerLabel.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                selectLabel = when (position) {
+                    0 -> 0 // feature
+                    1 -> 1 // fix
+                    2 -> 2 // network
+                    3 -> 3 // refactor
+                    4 -> 4 // chore
+                    5 -> 5 // style
+                    else -> -1
+                }
+            }
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+
+            }
+
+        }
+    }
+
     private fun initCloseButton() {
         binding.buttonCancel.setOnClickListener {
             this.dismiss()
@@ -101,6 +133,7 @@ class AddTaskDialogFragment : DialogFragment() {
 
     private fun initAddButton() {
         binding.buttonAdd.setOnClickListener {
+            Log.d("initAddButton", selectLabel.toString())
             this.dismiss()
         }
     }
