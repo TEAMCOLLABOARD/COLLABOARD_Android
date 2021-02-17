@@ -14,10 +14,12 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.NumberPicker
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import com.example.collaboard_android.R
 import com.example.collaboard_android.databinding.DialogAddTaskBinding
+import java.util.*
 
 class AddTaskDialogFragment : DialogFragment() {
 
@@ -25,6 +27,16 @@ class AddTaskDialogFragment : DialogFragment() {
     private val binding get() = _binding!!
 
     private var selectLabel = -1
+
+    private lateinit var currentDate: Calendar
+
+    private lateinit var year: NumberPicker
+    private lateinit var month: NumberPicker
+    private lateinit var date: NumberPicker
+
+    private var selectYear = 0
+    private var selectMonth = 0
+    private var selectDate = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -44,6 +56,8 @@ class AddTaskDialogFragment : DialogFragment() {
         initEditImageButton()
 
         initLabelSpinner()
+
+        initDatePicker()
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -122,6 +136,130 @@ class AddTaskDialogFragment : DialogFragment() {
 
             }
 
+        }
+    }
+
+    private fun initDatePicker() {
+        year = binding.datePicker.year
+        month = binding.datePicker.month
+        date = binding.datePicker.date
+
+        setDateRange()
+
+        initDateValue()
+
+        setDatePickerMaxValue()
+
+        setDateValue()
+
+        setPickerLimit()
+
+        setListenerOnDatePicker()
+    }
+
+    private fun setDateRange() {
+        // 현재 날짜 가져오기
+        currentDate = Calendar.getInstance()
+
+        // minValue = 최소 날짜 표시
+        year.minValue = currentDate.get(Calendar.YEAR) - 1
+        month.minValue = 1
+        date.minValue = 1
+
+        // maxValue = 최대 날짜 표시
+        year.maxValue = currentDate.get(Calendar.YEAR)
+        month.maxValue = currentDate.get(Calendar.MONTH) + 1
+        date.maxValue = currentDate.get(Calendar.DAY_OF_MONTH)
+    }
+
+    private fun setDatePickerMaxValue() {
+        // year에 따라 month maxValue 변경
+        if(year.value == currentDate.get(Calendar.YEAR)) {
+            month.maxValue = currentDate.get(Calendar.MONTH) + 1
+        } else {
+            month.maxValue = 12
+        }
+
+        // month에 따라 month, date maxValue 변경
+        if(month.value == currentDate.get(Calendar.MONTH) + 1) {
+            month.maxValue = currentDate.get(Calendar.MONTH) + 1
+            date.maxValue = currentDate.get(Calendar.DAY_OF_MONTH)
+        } else {
+            setMonthMax()
+        }
+    }
+
+    private fun initDateValue() {
+        year.value = currentDate.get(Calendar.YEAR)
+        month.value = currentDate.get(Calendar.MONTH) + 1
+        date.value = currentDate.get(Calendar.DAY_OF_MONTH)
+    }
+
+    private fun setDateValue() {
+        selectYear = year.value
+        selectMonth = month.value
+        selectDate = date.value
+    }
+
+    private fun setPickerLimit() {
+        // 순환 안되게 막기
+        year.wrapSelectorWheel = false
+        month.wrapSelectorWheel = false
+        date.wrapSelectorWheel = false
+
+        // edittext 입력 방지
+        year.descendantFocusability = NumberPicker.FOCUS_BLOCK_DESCENDANTS
+        month.descendantFocusability = NumberPicker.FOCUS_BLOCK_DESCENDANTS
+        date.descendantFocusability = NumberPicker.FOCUS_BLOCK_DESCENDANTS
+    }
+
+    private fun setListenerOnDatePicker() {
+        // year picker change listener
+        year.setOnValueChangedListener { _, _, _ ->
+
+            if(year.value == currentDate.get(Calendar.YEAR)) {
+                month.maxValue = currentDate.get(Calendar.MONTH) + 1
+                date.maxValue = currentDate.get(Calendar.DAY_OF_MONTH)
+            } else {
+                month.value = currentDate.get(Calendar.MONTH) + 1
+                date.value = currentDate.get(Calendar.DAY_OF_MONTH)
+                month.maxValue = 12
+                setMonthMax()
+            }
+            setDateValue()
+        }
+
+        // month picker change listener
+        month.setOnValueChangedListener { _, _, _ ->
+
+            if(year.value == currentDate.get(Calendar.YEAR) && month.value == currentDate.get(
+                            Calendar.MONTH) + 1) {
+                // 현재 년도에 현재 날짜일 때
+                month.maxValue = currentDate.get(Calendar.MONTH) + 1
+                date.maxValue = currentDate.get(Calendar.DAY_OF_MONTH)
+            } else {
+                month.maxValue = 12
+                setMonthMax()
+            }
+            setDateValue()
+        }
+    }
+
+    // 달 별로 일수 다른거 미리 세팅해둔 함수
+    private fun setMonthMax() {
+        val month = binding.datePicker.month
+        val date = binding.datePicker.date
+
+        when (month.value) {
+            2 -> {
+                date.maxValue = 29
+            }
+            4, 6, 9, 11 -> {
+                date.maxValue = 30
+            }
+            1, 3, 5, 7, 8, 10, 12 -> {
+                date.maxValue = 31
+            }
         }
     }
 
