@@ -162,28 +162,27 @@ class AddTaskDialogFragment : DialogFragment() {
         currentDate = Calendar.getInstance()
 
         // minValue = 최소 날짜 표시
-        year.minValue = currentDate.get(Calendar.YEAR) - 1
-        month.minValue = 1
-        date.minValue = 1
+        year.minValue = currentDate.get(Calendar.YEAR)
+        month.minValue = currentDate.get(Calendar.MONTH) + 1
+        date.minValue = currentDate.get(Calendar.DAY_OF_MONTH)
 
         // maxValue = 최대 날짜 표시
-        year.maxValue = currentDate.get(Calendar.YEAR)
-        month.maxValue = currentDate.get(Calendar.MONTH) + 1
-        date.maxValue = currentDate.get(Calendar.DAY_OF_MONTH)
+        year.maxValue = currentDate.get(Calendar.YEAR) + 1
+        month.maxValue = 12
+        date.maxValue = 31
     }
 
     private fun setDatePickerMaxValue() {
         // year에 따라 month maxValue 변경
-        if(year.value == currentDate.get(Calendar.YEAR)) {
-            month.maxValue = currentDate.get(Calendar.MONTH) + 1
+        if (year.value == currentDate.get(Calendar.YEAR)) {
+            month.maxValue = 12
         } else {
             month.maxValue = 12
         }
 
         // month에 따라 month, date maxValue 변경
-        if(month.value == currentDate.get(Calendar.MONTH) + 1) {
-            month.maxValue = currentDate.get(Calendar.MONTH) + 1
-            date.maxValue = currentDate.get(Calendar.DAY_OF_MONTH)
+        if (month.value == currentDate.get(Calendar.MONTH) + 1) {
+            setMonthMax()
         } else {
             setMonthMax()
         }
@@ -216,33 +215,49 @@ class AddTaskDialogFragment : DialogFragment() {
     private fun setListenerOnDatePicker() {
         // year picker change listener
         year.setOnValueChangedListener { _, _, _ ->
-
             if(year.value == currentDate.get(Calendar.YEAR)) {
-                month.maxValue = currentDate.get(Calendar.MONTH) + 1
-                date.maxValue = currentDate.get(Calendar.DAY_OF_MONTH)
+                setPickerMinMaxValue(true)
             } else {
-                month.value = currentDate.get(Calendar.MONTH) + 1
-                date.value = currentDate.get(Calendar.DAY_OF_MONTH)
-                month.maxValue = 12
-                setMonthMax()
+                setPickerMinMaxValue(false)
             }
             setDateValue()
         }
 
         // month picker change listener
         month.setOnValueChangedListener { _, _, _ ->
-
             if(year.value == currentDate.get(Calendar.YEAR) && month.value == currentDate.get(
                             Calendar.MONTH) + 1) {
                 // 현재 년도에 현재 날짜일 때
-                month.maxValue = currentDate.get(Calendar.MONTH) + 1
-                date.maxValue = currentDate.get(Calendar.DAY_OF_MONTH)
+                setPickerMinMaxValue(true)
             } else {
-                month.maxValue = 12
-                setMonthMax()
+                setPickerMinMaxValue(false)
             }
             setDateValue()
         }
+
+        // date picker change listener
+        date.setOnValueChangedListener { _, _, _ ->
+            if(year.value == currentDate.get(Calendar.YEAR) && month.value == currentDate.get(
+                            Calendar.MONTH) + 1 && date.value == currentDate.get(Calendar.DAY_OF_MONTH)) {
+                // 현재 년도에 현재 날짜일 때
+                setPickerMinMaxValue(true)
+            } else {
+                setPickerMinMaxValue(false)
+            }
+            setDateValue()
+        }
+    }
+
+    private fun setPickerMinMaxValue(isCurrent: Boolean) {
+        if (isCurrent) {
+            month.minValue = currentDate.get(Calendar.MONTH) + 1
+            date.minValue = currentDate.get(Calendar.DAY_OF_MONTH)
+        } else {
+            month.minValue = 1
+            date.minValue = 1
+        }
+        month.maxValue = 12
+        setMonthMax()
     }
 
     // 달 별로 일수 다른거 미리 세팅해둔 함수
@@ -272,6 +287,9 @@ class AddTaskDialogFragment : DialogFragment() {
     private fun initAddButton() {
         binding.buttonAdd.setOnClickListener {
             Log.d("initAddButton", selectLabel.toString())
+            Log.d("initAddButton-date", selectYear.toString())
+            Log.d("initAddButton-date", selectMonth.toString())
+            Log.d("initAddButton-date", selectDate.toString())
             this.dismiss()
         }
     }
