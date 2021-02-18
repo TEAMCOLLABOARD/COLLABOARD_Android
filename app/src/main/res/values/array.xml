@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="label_array">
+        <item>Feature</item>
+        <item>Fix</item>
+        <item>Network</item>
+        <item>Refactor</item>
+        <item>Chore</item>
+        <item>Style</item>
+    </string-array>
+</resources>

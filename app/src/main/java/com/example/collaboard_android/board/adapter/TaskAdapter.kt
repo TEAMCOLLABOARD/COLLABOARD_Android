@@ -29,6 +29,11 @@ class TaskAdapter(private var list: MutableList<TaskData>, private val listener:
         this.list = list
     }
 
+    // recyclerview item 추가
+    fun addItem(item: TaskData) {
+        this.list.add(item)
+    }
+
     fun getList() : MutableList<TaskData> = this.list.toMutableList()
 
     override fun onTouch(v: View?, event: MotionEvent?): Boolean {
@@ -72,5 +77,4 @@ class TaskAdapter(private var list: MutableList<TaskData>, private val listener:
             }
         }
     }
-
 }
