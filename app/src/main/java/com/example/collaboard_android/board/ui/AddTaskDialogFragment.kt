@@ -21,7 +21,7 @@ import com.example.collaboard_android.R
 import com.example.collaboard_android.databinding.DialogAddTaskBinding
 import java.util.*
 
-class AddTaskDialogFragment : DialogFragment() {
+class AddTaskDialogFragment(val itemClick: (String, Int, IntArray) -> Unit) : DialogFragment() {
 
     private var _binding: DialogAddTaskBinding? = null
     private val binding get() = _binding!!
@@ -237,8 +237,8 @@ class AddTaskDialogFragment : DialogFragment() {
 
         // date picker change listener
         date.setOnValueChangedListener { _, _, _ ->
-            if(year.value == currentDate.get(Calendar.YEAR) && month.value == currentDate.get(
-                            Calendar.MONTH) + 1 && date.value == currentDate.get(Calendar.DAY_OF_MONTH)) {
+            if(year.value == currentDate.get(Calendar.YEAR)
+                    && month.value == currentDate.get(Calendar.MONTH) + 1) {
                 // 현재 년도에 현재 날짜일 때
                 setPickerMinMaxValue(true)
             } else {
@@ -286,10 +286,9 @@ class AddTaskDialogFragment : DialogFragment() {
 
     private fun initAddButton() {
         binding.buttonAdd.setOnClickListener {
-            Log.d("initAddButton", selectLabel.toString())
-            Log.d("initAddButton-date", selectYear.toString())
-            Log.d("initAddButton-date", selectMonth.toString())
-            Log.d("initAddButton-date", selectDate.toString())
+            val pickData = intArrayOf(selectYear, selectMonth, selectDate)
+            itemClick(binding.etDescription.text.toString(), selectLabel, pickData)
+
             this.dismiss()
         }
     }
