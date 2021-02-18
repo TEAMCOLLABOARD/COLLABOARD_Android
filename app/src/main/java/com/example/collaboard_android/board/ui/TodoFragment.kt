@@ -1,6 +1,5 @@
 package com.example.collaboard_android.board.ui
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -64,6 +63,7 @@ class TodoFragment : Fragment(), TaskListener {
     }
 
     private fun addRecyclerItemToAdapter(label: String, deadline: String, description: String) {
+        //Todo: 더미로 넣어놓은 프로필 이미지, 사용자 이름 수정하기
         val taskData = TaskData(label, deadline, description,
                 ResourcesCompat.getDrawable(activity!!.resources, R.drawable.image_profile, null), "heewon")
 
@@ -74,7 +74,7 @@ class TodoFragment : Fragment(), TaskListener {
     }
 
     private fun initRecyclerView() {
-        // 서버에서 리스트 받아오기
+        //Todo: 서버에서 가져온 초기 데이터 뿌려주기
         val list: MutableList<TaskData> =  mutableListOf()
         binding.recyclerviewTodo?.init(list, binding.tvEmptyTodo)
     }
