@@ -1,15 +1,12 @@
 package com.example.collaboard_android.board.ui
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.appcompat.content.res.AppCompatResources.getDrawable
-import androidx.core.content.ContextCompat.getDrawable
 import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,7 +16,6 @@ import com.example.collaboard_android.board.adapter.TaskAdapter
 import com.example.collaboard_android.board.adapter.TaskData
 import com.example.collaboard_android.board.adapter.TaskListener
 import com.example.collaboard_android.databinding.FragmentTodoBinding
-import java.text.SimpleDateFormat
 import java.util.*
 
 class TodoFragment : Fragment(), TaskListener {
@@ -110,7 +106,7 @@ class TodoFragment : Fragment(), TaskListener {
             }
             else -> {
                 val result = (-1) * deadline
-                "D+$deadline"
+                "D+$result"
             }
         }
     }
@@ -118,23 +114,25 @@ class TodoFragment : Fragment(), TaskListener {
     private fun addRecyclerItemToAdapter(label: String, deadline: String, description: String) {
         val taskData = TaskData(label, deadline, description,
                 ResourcesCompat.getDrawable(activity!!.resources, R.drawable.image_profile, null), "heewon")
-        recyclerList.add(taskData)
 
-        binding.recyclerviewTodo.init(binding.tvEmptyTodo)
+        taskAdapter.addItem(taskData)
+        taskAdapter.notifyDataSetChanged()
+
+        //recyclerList.add(taskData)
     }
 
     private fun initRecyclerView() {
-        recyclerList = mutableListOf(
-                TaskData("Feature", "D-1", "실습 프로젝트 내용 옮겨오기",
-                        ResourcesCompat.getDrawable(activity!!.resources, R.drawable.image_profile, null), "heewon")
-        )
-        binding.recyclerviewTodo?.init(binding.tvEmptyTodo)
+        // 서버에서 리스트 받아오기
+        val list: MutableList<TaskData> =  mutableListOf()
+        binding.recyclerviewTodo?.init(list, binding.tvEmptyTodo)
     }
 
-    private fun RecyclerView.init(emptyTextView: TextView) {
+    private fun RecyclerView.init(list: MutableList<TaskData>, emptyTextView: TextView) {
         this.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        taskAdapter = TaskAdapter(recyclerList, this@TodoFragment)
+        taskAdapter = TaskAdapter(list, this@TodoFragment)
         this.adapter = taskAdapter
+
+        recyclerList = list
 
         // recyclerview dataset 바뀔 때마다 notifyDataSetChanged()
         taskAdapter.notifyDataSetChanged()
@@ -165,7 +163,8 @@ class TodoFragment : Fragment(), TaskListener {
                     super.clearView(recyclerView, viewHolder)
                     viewHolder.itemView.alpha = 1.0f
 
-                    recyclerList = taskAdapter.getList()
+                    val adapter = recyclerView.adapter as TaskAdapter
+                    recyclerList = adapter.getList()
 
                     //val aContext: BoardActivity = BoardActivity.mContext as BoardActivity
                     //aContext.putFirstRecyclerInDatabase(recyclerList)
@@ -176,11 +175,12 @@ class TodoFragment : Fragment(), TaskListener {
                     viewHolder: RecyclerView.ViewHolder,
                     target: RecyclerView.ViewHolder
                 ): Boolean {
+                    val adapter = recyclerView.adapter as TaskAdapter
                     val from = viewHolder.adapterPosition
                     val to = target.adapterPosition
 
-                    taskAdapter.moveItem(from, to)
-                    taskAdapter.notifyItemMoved(from, to)
+                    adapter.moveItem(from, to)
+                    adapter.notifyItemMoved(from, to)
 
                     return true
                 }
