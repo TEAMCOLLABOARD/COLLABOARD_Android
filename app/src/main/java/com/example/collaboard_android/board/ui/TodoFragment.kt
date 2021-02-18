@@ -16,6 +16,9 @@ import com.example.collaboard_android.board.adapter.TaskAdapter
 import com.example.collaboard_android.board.adapter.TaskData
 import com.example.collaboard_android.board.adapter.TaskListener
 import com.example.collaboard_android.databinding.FragmentTodoBinding
+import com.example.collaboard_android.util.calDeadline
+import com.example.collaboard_android.util.getDeadlineString
+import com.example.collaboard_android.util.getLabelString
 import java.util.*
 
 class TodoFragment : Fragment(), TaskListener {
@@ -57,57 +60,6 @@ class TodoFragment : Fragment(), TaskListener {
                 addRecyclerItemToAdapter(labelString, deadlineString, description)
             }
             addTaskDialog.show(childFragmentManager, "add_task_dialog")
-        }
-    }
-
-    private fun getLabelString(label: Int) : String {
-        return when (label) {
-            0 -> "Feature"
-            1 -> "Fix"
-            2 -> "Network"
-            3 -> "Refactor"
-            4 -> "Chore"
-            5 -> "Style"
-            else -> "error"
-        }
-    }
-
-    @SuppressLint("SimpleDateFormat")
-    private fun calDeadline(pickDate: IntArray) : Int {
-        val year = pickDate[0]
-        val month = pickDate[1] - 1
-        val date = pickDate[2]
-
-        try {
-            val todayCalendar = Calendar.getInstance()
-            val dDayCalendar = Calendar.getInstance()
-
-            dDayCalendar.set(year, month, date)
-
-            val today: Long = todayCalendar.timeInMillis / 86400000
-            val dDay: Long = dDayCalendar.timeInMillis / 86400000
-            val count: Long = dDay - today
-
-            return count.toInt()
-        }
-        catch (e: Exception) {
-            e.printStackTrace()
-            return -1
-        }
-    }
-
-    private fun getDeadlineString(deadline: Int) : String {
-        return when {
-            deadline > 0 -> {
-                "D-$deadline"
-            }
-            deadline == 0 -> {
-                "D-Day"
-            }
-            else -> {
-                val result = (-1) * deadline
-                "D+$result"
-            }
         }
     }
 
