@@ -1,6 +1,5 @@
 package com.example.collaboard_android.board.ui
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -16,6 +15,9 @@ import com.example.collaboard_android.board.adapter.TaskAdapter
 import com.example.collaboard_android.board.adapter.TaskData
 import com.example.collaboard_android.board.adapter.TaskListener
 import com.example.collaboard_android.databinding.FragmentTodoBinding
+import com.example.collaboard_android.util.calDeadline
+import com.example.collaboard_android.util.getDeadlineString
+import com.example.collaboard_android.util.getLabelString
 import java.util.*
 
 class TodoFragment : Fragment(), TaskListener {
@@ -60,58 +62,8 @@ class TodoFragment : Fragment(), TaskListener {
         }
     }
 
-    private fun getLabelString(label: Int) : String {
-        return when (label) {
-            0 -> "Feature"
-            1 -> "Fix"
-            2 -> "Network"
-            3 -> "Refactor"
-            4 -> "Chore"
-            5 -> "Style"
-            else -> "error"
-        }
-    }
-
-    @SuppressLint("SimpleDateFormat")
-    private fun calDeadline(pickDate: IntArray) : Int {
-        val year = pickDate[0]
-        val month = pickDate[1] - 1
-        val date = pickDate[2]
-
-        try {
-            val todayCalendar = Calendar.getInstance()
-            val dDayCalendar = Calendar.getInstance()
-
-            dDayCalendar.set(year, month, date)
-
-            val today: Long = todayCalendar.timeInMillis / 86400000
-            val dDay: Long = dDayCalendar.timeInMillis / 86400000
-            val count: Long = dDay - today
-
-            return count.toInt()
-        }
-        catch (e: Exception) {
-            e.printStackTrace()
-            return -1
-        }
-    }
-
-    private fun getDeadlineString(deadline: Int) : String {
-        return when {
-            deadline > 0 -> {
-                "D-$deadline"
-            }
-            deadline == 0 -> {
-                "D-Day"
-            }
-            else -> {
-                val result = (-1) * deadline
-                "D+$result"
-            }
-        }
-    }
-
     private fun addRecyclerItemToAdapter(label: String, deadline: String, description: String) {
+        //Todo: 더미로 넣어놓은 프로필 이미지, 사용자 이름 수정하기
         val taskData = TaskData(label, deadline, description,
                 ResourcesCompat.getDrawable(activity!!.resources, R.drawable.image_profile, null), "heewon")
 
@@ -122,7 +74,7 @@ class TodoFragment : Fragment(), TaskListener {
     }
 
     private fun initRecyclerView() {
-        // 서버에서 리스트 받아오기
+        //Todo: 서버에서 가져온 초기 데이터 뿌려주기
         val list: MutableList<TaskData> =  mutableListOf()
         binding.recyclerviewTodo?.init(list, binding.tvEmptyTodo)
     }
