@@ -20,4 +20,10 @@
     <color name="gray_task">#737373</color>
     <color name="black_description">#595959</color>
     <color name="gray_divider">#D0CECE</color>
+
+    <!-- BoardListActivity color palette -->
+    <color name="blue_search">#8C7684C2</color>
+    <color name="gray_board_list">#FAFAFA</color>
+    <color name="gray_member_count">#A6A6A6</color>
+    <color name="gray_hint">#8CFAFAFA</color>
 </resources>
