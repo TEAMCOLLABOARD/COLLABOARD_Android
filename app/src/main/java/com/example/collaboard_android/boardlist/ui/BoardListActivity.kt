@@ -1,4 +1,4 @@
-package com.example.collaboard_android.boardlist
+package com.example.collaboard_android.boardlist.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
