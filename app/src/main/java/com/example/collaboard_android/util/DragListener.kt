@@ -23,7 +23,7 @@ class DragListener internal constructor(private val listener: TaskListener) : Vi
 
     override fun onDrag(v: View, event: DragEvent): Boolean {
 
-        val aContext: BoardActivity = mContext as BoardActivity
+        val aContext: BoardActivity = mContext
 
         when (event.action) {
 

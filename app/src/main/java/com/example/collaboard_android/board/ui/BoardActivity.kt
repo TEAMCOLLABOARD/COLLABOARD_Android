@@ -1,6 +1,5 @@
 package com.example.collaboard_android.board.ui
 
-import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -14,7 +13,8 @@ class BoardActivity : AppCompatActivity() {
     private lateinit var viewPagerAdapter: ViewPagerAdapter
 
     companion object {
-        lateinit var mContext: Context
+        lateinit var mContext: BoardActivity
+        private set
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
