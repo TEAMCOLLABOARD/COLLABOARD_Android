@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "837188589001",
+    "project_id": "collaboard-526a0",
+    "storage_bucket": "collaboard-526a0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:837188589001:android:8ed3628723f0892df3c418",
+        "android_client_info": {
+          "package_name": "com.example.collaboard_android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "837188589001-v2s3irnmnmvte8horik9mm2gn661nf83.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA0jw97gQnEM8gzS8Qvoka0SB3icOhcSzo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "837188589001-v2s3irnmnmvte8horik9mm2gn661nf83.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
