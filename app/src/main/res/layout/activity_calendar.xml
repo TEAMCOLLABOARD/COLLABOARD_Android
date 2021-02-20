@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F1F1F1"
+    android:orientation="horizontal"
+    tools:context=".MainActivity">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginRight="20dp"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="5dp">
+
+        <com.applikeysolutions.cosmocalendar.view.CalendarView
+            android:id="@+id/cv_calendar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:connectedDayIconPosition="top"
+            app:currentDayIconRes="@drawable/ic_today"
+            app:currentDaySelectedIconRes="@drawable/ic_today_selected"
+            app:currentDayTextColor="#0A82FF"
+            app:firstDayOfTheWeek="sunday"
+            app:monthTextColor="#576EAD"
+            app:orientation="horizontal"
+            app:selectedDayBackgroundColor="#576EAD"
+            app:selectedDayTextColor="@android:color/white"
+            app:selectionType="single"
+            app:weekDayTitleTextColor="#576EAD"
+            app:weekendDayTextColor="#576EAD" />
+
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/tv_todo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/cardView"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="15dp"
+        android:text="To do"
+        android:textColor="#576EAD"
+        android:textSize="25sp"
+        android:textStyle="bold" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_calendar_deadline"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/tv_todo"
+        android:layoutAnimation="@anim/layout_animation"/>
+
+</RelativeLayout>
