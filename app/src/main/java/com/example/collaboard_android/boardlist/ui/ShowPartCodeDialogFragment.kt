@@ -1,6 +1,9 @@
 package com.example.collaboard_android.boardlist.ui
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
+import android.content.Context.CLIPBOARD_SERVICE
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.Point
@@ -10,6 +13,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.example.collaboard_android.board.ui.BoardActivity
 import com.example.collaboard_android.boardlist.ui.CreateBoardActivity.Companion.nContext
@@ -34,6 +38,8 @@ class ShowPartCodeDialogFragment : DialogFragment() {
 
         generateParticipationCode()
 
+        initCopyButton()
+
         initCloseButton()
     }
 
@@ -55,7 +61,16 @@ class ShowPartCodeDialogFragment : DialogFragment() {
                 buf.append(numTable[random.nextInt(numTableLen)])
         }
         binding.tvPartCode.text = buf.toString()
-        BOARD_CODE = buf.toString()
+    }
+
+    private fun initCopyButton() {
+        binding.buttonCopy.setOnClickListener {
+            BOARD_CODE = binding.tvPartCode.text.toString()
+            val clipboardManager = context?.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+            val clipData = ClipData.newPlainText("ID", BOARD_CODE)
+            clipboardManager.setPrimaryClip(clipData)
+            Toast.makeText(context, "Participation code copied", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun initCloseButton() {

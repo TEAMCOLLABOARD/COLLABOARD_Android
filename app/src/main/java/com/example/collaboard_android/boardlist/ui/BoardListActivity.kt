@@ -31,6 +31,12 @@ class BoardListActivity : AppCompatActivity() {
         initRecyclerView()
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        binding.etParticipationCode.text.clear()
+    }
+
     private fun initRecyclerView() {
         boardListAdapter = BoardListAdapter(this)
         binding.recyclerviewBoardList.adapter = boardListAdapter
