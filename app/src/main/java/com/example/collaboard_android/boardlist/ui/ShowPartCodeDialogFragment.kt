@@ -14,11 +14,14 @@ import androidx.fragment.app.DialogFragment
 import com.example.collaboard_android.board.ui.BoardActivity
 import com.example.collaboard_android.boardlist.ui.CreateBoardActivity.Companion.nContext
 import com.example.collaboard_android.databinding.DialogShowParticipationCodeBinding
+import java.util.*
 
 class ShowPartCodeDialogFragment : DialogFragment() {
 
     private var _binding: DialogShowParticipationCodeBinding? = null
     private val binding get() = _binding!!
+
+    private lateinit var BOARD_CODE: String
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -29,7 +32,30 @@ class ShowPartCodeDialogFragment : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        generateParticipationCode()
+
         initCloseButton()
+    }
+
+    private fun generateParticipationCode() {
+        val codeLength = 6
+        val charTable = charArrayOf( 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K',
+                'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' )
+        val numTable = charArrayOf( '1', '2', '3', '4', '5', '6', '7', '8', '9', '0' )
+
+        val random = Random(System.currentTimeMillis())
+        val charTableLen = charTable.size
+        val numTableLen = numTable.size
+        val buf = StringBuffer()
+
+        for (i in 1..codeLength) {
+            if (i % 2 == 1)
+                buf.append(charTable[random.nextInt(charTableLen)])
+            else if (i % 2 == 0)
+                buf.append(numTable[random.nextInt(numTableLen)])
+        }
+        binding.tvPartCode.text = buf.toString()
+        BOARD_CODE = buf.toString()
     }
 
     private fun initCloseButton() {
