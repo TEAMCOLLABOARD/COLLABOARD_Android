@@ -33,13 +33,12 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintlayout_middle"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginHorizontal="36dp"
-        app:layout_constraintBottom_toTopOf="@+id/button_create"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.65"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        app:layout_constraintVertical_bias="0.292">
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
 
         <TextView
             android:id="@+id/tv_title"
@@ -51,15 +50,18 @@
             android:text="Create\nNew Board"
             android:textColor="@color/white"
             android:textSize="28dp"
+            app:layout_constraintBottom_toTopOf="@+id/constraintlayout_board_name"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="spread" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintlayout_board_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="90dp"
+            app:layout_constraintBottom_toTopOf="@+id/constraintlayout_repo"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_title">
 
@@ -67,7 +69,7 @@
                 android:id="@+id/tv_board_name_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/notosanskrmedium"
+                android:fontFamily="@font/notosanskrregular"
                 android:includeFontPadding="false"
                 android:text="Board Name"
                 android:textColor="@color/white"
@@ -80,12 +82,12 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="3dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="18dp"
                 android:layout_marginEnd="5dp"
                 android:layout_marginRight="5dp"
                 android:background="@null"
                 android:clickable="true"
-                android:fontFamily="@font/notosanskrregular"
+                android:fontFamily="@font/notosanskrmedium"
                 android:includeFontPadding="false"
                 android:inputType="text"
                 android:lines="1"
@@ -112,7 +114,7 @@
                 android:id="@+id/view_underline"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="8dp"
                 android:background="@color/gray_divider"
                 app:layout_constraintTop_toBottomOf="@+id/et_board_name" />
 
@@ -122,10 +124,9 @@
             android:id="@+id/constraintlayout_repo"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
-            android:layout_marginBottom="50dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/constraintlayout_board_name">
 
@@ -133,7 +134,7 @@
                 android:id="@+id/tv_repo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/notosanskrmedium"
+                android:fontFamily="@font/notosanskrregular"
                 android:includeFontPadding="false"
                 android:text="Repository"
                 android:textColor="@color/white"
@@ -144,7 +145,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="18dp"
                 android:background="@drawable/background_repo_spinner"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_repo">
@@ -178,7 +179,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
-        android:id="@+id/button_create"
+        android:id="@+id/btn_create"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="36dp"
@@ -187,7 +188,7 @@
         android:fontFamily="@font/notosanskrmedium"
         android:gravity="center"
         android:includeFontPadding="false"
-        android:paddingVertical="11dp"
+        android:paddingVertical="12dp"
         android:text="Create"
         android:textColor="@color/gray_task"
         android:textSize="18dp"

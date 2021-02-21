@@ -10,7 +10,6 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import androidx.core.content.ContextCompat
 import com.example.collaboard_android.R
 import com.example.collaboard_android.databinding.ActivityCreateBoardBinding
 
@@ -26,11 +25,15 @@ class CreateBoardActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
+        nContext = this
+
         setKeyListenerOnEditText()
 
         initEditImageButton()
 
         initRepoSpinner()
+
+        initCreateButton()
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -108,5 +111,21 @@ class CreateBoardActivity : AppCompatActivity() {
             }
 
         }
+    }
+
+    private fun initCreateButton() {
+        binding.btnCreate.setOnClickListener {
+            val partCodeDialog = ShowPartCodeDialogFragment()
+            partCodeDialog.show(supportFragmentManager, "show_part_code_dialog")
+        }
+    }
+
+    fun finishActivity() {
+        finish()
+    }
+
+    companion object {
+        lateinit var nContext: CreateBoardActivity
+        private set
     }
 }

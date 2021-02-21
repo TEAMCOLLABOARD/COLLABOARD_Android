@@ -1,5 +1,6 @@
 package com.example.collaboard_android.boardlist.ui
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,7 +26,15 @@ class BoardListActivity : AppCompatActivity() {
 
         setCurrentDateOnTextView()
 
+        setClickListenerOnAddBtn()
+
         initRecyclerView()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        binding.etParticipationCode.text.clear()
     }
 
     private fun initRecyclerView() {
@@ -66,5 +75,12 @@ class BoardListActivity : AppCompatActivity() {
             else -> "Dec"
         }
         return "$monthString $dayString"
+    }
+
+    private fun setClickListenerOnAddBtn() {
+        binding.imgbtnAdd.setOnClickListener {
+            val intent = Intent(this, CreateBoardActivity::class.java)
+            startActivity(intent)
+        }
     }
 }
