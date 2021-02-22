@@ -12,6 +12,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.COLLABOARD_Android">
+        <activity
+            android:name=".board.ui.SignInOutActivity"
+            android:theme="@style/Theme.boardTheme" />
         <activity android:name=".board.ui.CalendarActivity" />
         <activity
             android:name=".boardlist.ui.CreateBoardActivity"
