@@ -3,8 +3,13 @@ package com.example.collaboard_android.board.ui
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import com.example.collaboard_android.board.adapter.TaskData
 import com.example.collaboard_android.board.adapter.ViewPagerAdapter
+import com.example.collaboard_android.boardlist.ui.BoardListActivity.Companion.BOARD_CODE
+import com.example.collaboard_android.boardlist.ui.BoardListActivity.Companion.BOARD_NAME
 import com.example.collaboard_android.databinding.ActivityBoardBinding
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 
 class BoardActivity : AppCompatActivity() {
 
@@ -12,10 +17,8 @@ class BoardActivity : AppCompatActivity() {
 
     private lateinit var viewPagerAdapter: ViewPagerAdapter
 
-    companion object {
-        lateinit var mContext: BoardActivity
-        private set
-    }
+    private val firebaseDatabase: FirebaseDatabase = FirebaseDatabase.getInstance()
+    private val databaseReference: DatabaseReference = firebaseDatabase.reference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,6 +31,8 @@ class BoardActivity : AppCompatActivity() {
         initViewPager()
 
         setViewPagerPaging()
+
+        initBoardName()
     }
 
     private fun initViewPager() {
@@ -50,6 +55,10 @@ class BoardActivity : AppCompatActivity() {
         binding.viewpagerBoard.pageMargin = (margin / 1.7).toInt()
     }
 
+    private fun initBoardName() {
+        binding.tvRepoName.text = BOARD_NAME
+    }
+
     fun getCurrentFrag() : Int {
         return when (binding.viewpagerBoard.currentItem) {
             0 -> 0
@@ -65,5 +74,31 @@ class BoardActivity : AppCompatActivity() {
                 binding.viewpagerBoard.setCurrentItem(index, true)
             }
         }, 500)
+    }
+
+    fun putTodoTaskInDatabase(list: MutableList<TaskData>) {
+        val recyclerMap = HashMap<String, MutableList<TaskData>>()
+        recyclerMap["recyclerArranging"] = list
+        databaseReference.child("board").child(BOARD_CODE).child("todo")
+                .updateChildren(recyclerMap as Map<String, Any>)
+    }
+
+    fun putInProgressTaskInDatabase(list: MutableList<TaskData>) {
+        val recyclerMap = HashMap<String, MutableList<TaskData>>()
+        recyclerMap["recyclerArranging"] = list
+        databaseReference.child("board").child(BOARD_CODE).child("inProgress")
+                .updateChildren(recyclerMap as Map<String, Any>)
+    }
+
+    fun putDoneTaskInDatabase(list: MutableList<TaskData>) {
+        val recyclerMap = HashMap<String, MutableList<TaskData>>()
+        recyclerMap["recyclerArranging"] = list
+        databaseReference.child("board").child(BOARD_CODE).child("done")
+                .updateChildren(recyclerMap as Map<String, Any>)
+    }
+
+    companion object {
+        lateinit var mContext: BoardActivity
+            private set
     }
 }

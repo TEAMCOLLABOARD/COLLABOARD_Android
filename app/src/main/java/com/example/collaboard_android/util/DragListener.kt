@@ -166,14 +166,28 @@ class DragListener internal constructor(private val listener: TaskListener) : Vi
                     }
                 }
 
-                finFrag = when {
-                    aContext.getCurrentFrag() == 0 -> 0
-                    aContext.getCurrentFrag() == 1 -> 1
-                    aContext.getCurrentFrag() == 2 -> 2
-                    else -> -1
+                aContext.apply {
+                    finFrag = when {
+                        getCurrentFrag() == 0 -> 0
+                        getCurrentFrag() == 1 -> 1
+                        getCurrentFrag() == 2 -> 2
+                        else -> -1
+                    }
                 }
 
                 // 서버로 바뀐 recyclerview data set 업로드
+                val todoRecyclerList = ((v.rootView.findViewById<View>(recyclerTodo)
+                        as RecyclerView).adapter as TaskAdapter?)!!.getList()
+                val inProgressRecyclerList = ((v.rootView.findViewById<View>(recyclerInProgress)
+                        as RecyclerView).adapter as TaskAdapter?)!!.getList()
+                val doneRecyclerList = ((v.rootView.findViewById<View>(recyclerDone)
+                        as RecyclerView).adapter as TaskAdapter?)!!.getList()
+
+                aContext.apply {
+                    putTodoTaskInDatabase(todoRecyclerList)
+                    putInProgressTaskInDatabase(inProgressRecyclerList)
+                    putDoneTaskInDatabase(doneRecyclerList)
+                }
 
             }
         }

@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.collaboard_android.boardlist.adapter.BoardListAdapter
 import com.example.collaboard_android.boardlist.adapter.BoardListData
 import com.example.collaboard_android.databinding.ActivityBoardListBinding
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import java.lang.StringBuilder
 import java.util.*
 
@@ -18,6 +20,11 @@ class BoardListActivity : AppCompatActivity() {
 
     private lateinit var currentDate: Calendar
 
+    private val firebaseDatabase: FirebaseDatabase = FirebaseDatabase.getInstance()
+    private val databaseReference: DatabaseReference = firebaseDatabase.reference
+
+    private val USER_NAME = "Heewon"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityBoardListBinding.inflate(layoutInflater)
@@ -26,6 +33,8 @@ class BoardListActivity : AppCompatActivity() {
 
         setCurrentDateOnTextView()
 
+        initUserProfile()
+
         setClickListenerOnAddBtn()
 
         initRecyclerView()
@@ -33,8 +42,22 @@ class BoardListActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        initValue()
+    }
 
+    private fun initValue() {
         binding.etParticipationCode.text.clear()
+        BOARD_NAME = ""
+        BOARD_CODE = ""
+    }
+
+    private fun initUserProfile() {
+        // 사용자 이름 설정
+        val nameString = StringBuilder("Hi, ")
+        nameString.append(USER_NAME)
+        binding.tvName.text = nameString
+
+        //Todo: 사용자 프로필 이미지 설정
     }
 
     private fun initRecyclerView() {
@@ -82,5 +105,10 @@ class BoardListActivity : AppCompatActivity() {
             val intent = Intent(this, CreateBoardActivity::class.java)
             startActivity(intent)
         }
+    }
+
+    companion object {
+        lateinit var BOARD_NAME: String
+        lateinit var BOARD_CODE: String
     }
 }

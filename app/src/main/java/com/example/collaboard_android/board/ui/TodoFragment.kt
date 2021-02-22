@@ -6,11 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.collaboard_android.R
 import com.example.collaboard_android.board.adapter.TaskAdapter
 import com.example.collaboard_android.board.adapter.TaskData
 import com.example.collaboard_android.board.adapter.TaskListener
@@ -18,6 +16,8 @@ import com.example.collaboard_android.databinding.FragmentTodoBinding
 import com.example.collaboard_android.util.calDeadline
 import com.example.collaboard_android.util.getDeadlineString
 import com.example.collaboard_android.util.getLabelString
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import java.util.*
 
 class TodoFragment : Fragment(), TaskListener {
@@ -27,6 +27,11 @@ class TodoFragment : Fragment(), TaskListener {
 
     private lateinit var recyclerList: MutableList<TaskData>
     private lateinit var taskAdapter: TaskAdapter
+
+    private val firebaseDatabase: FirebaseDatabase = FirebaseDatabase.getInstance()
+    private val databaseReference: DatabaseReference = firebaseDatabase.reference
+
+    val boardContext: BoardActivity = BoardActivity.mContext
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -65,12 +70,14 @@ class TodoFragment : Fragment(), TaskListener {
     private fun addRecyclerItemToAdapter(label: String, deadline: String, description: String) {
         //Todo: 더미로 넣어놓은 프로필 이미지, 사용자 이름 수정하기
         val taskData = TaskData(label, deadline, description,
-                ResourcesCompat.getDrawable(activity!!.resources, R.drawable.image_profile, null), "heewon")
+                "https://avatars.githubusercontent.com/u/52772787?s=460&u=4a9f12ef174f88ec143b70f4fcaaa8f1b2d87b43&v=4", "heewon")
 
         taskAdapter.addItem(taskData)
         taskAdapter.notifyDataSetChanged()
 
         //recyclerList.add(taskData)
+
+        boardContext.putTodoTaskInDatabase(taskAdapter.getList())
     }
 
     private fun initRecyclerView() {
@@ -118,8 +125,7 @@ class TodoFragment : Fragment(), TaskListener {
                     val adapter = recyclerView.adapter as TaskAdapter
                     recyclerList = adapter.getList()
 
-                    //val aContext: BoardActivity = BoardActivity.mContext as BoardActivity
-                    //aContext.putFirstRecyclerInDatabase(recyclerList)
+                    boardContext.putTodoTaskInDatabase(recyclerList)
                 }
 
                 override fun onMove(

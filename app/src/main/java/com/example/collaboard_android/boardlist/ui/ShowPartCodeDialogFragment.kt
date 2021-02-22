@@ -16,8 +16,15 @@ import android.view.WindowManager
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.example.collaboard_android.board.ui.BoardActivity
+import com.example.collaboard_android.boardlist.ui.BoardListActivity.Companion.BOARD_CODE
+import com.example.collaboard_android.boardlist.ui.BoardListActivity.Companion.BOARD_NAME
+import com.example.collaboard_android.boardlist.ui.CreateBoardActivity.Companion.dialog_board_name
+import com.example.collaboard_android.boardlist.ui.CreateBoardActivity.Companion.dialog_repo_name
 import com.example.collaboard_android.boardlist.ui.CreateBoardActivity.Companion.nContext
 import com.example.collaboard_android.databinding.DialogShowParticipationCodeBinding
+import com.example.collaboard_android.model.BoardInfoModel
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import java.util.*
 
 class ShowPartCodeDialogFragment : DialogFragment() {
@@ -25,7 +32,8 @@ class ShowPartCodeDialogFragment : DialogFragment() {
     private var _binding: DialogShowParticipationCodeBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var BOARD_CODE: String
+    private val firebaseDatabase: FirebaseDatabase = FirebaseDatabase.getInstance()
+    private val databaseReference: DatabaseReference = firebaseDatabase.reference
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -65,9 +73,8 @@ class ShowPartCodeDialogFragment : DialogFragment() {
 
     private fun initCopyButton() {
         binding.buttonCopy.setOnClickListener {
-            BOARD_CODE = binding.tvPartCode.text.toString()
             val clipboardManager = context?.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-            val clipData = ClipData.newPlainText("ID", BOARD_CODE)
+            val clipData = ClipData.newPlainText("ID", binding.tvPartCode.text.toString())
             clipboardManager.setPrimaryClip(clipData)
             Toast.makeText(context, "Participation code copied", Toast.LENGTH_SHORT).show()
         }
@@ -75,9 +82,21 @@ class ShowPartCodeDialogFragment : DialogFragment() {
 
     private fun initCloseButton() {
         binding.buttonClose.setOnClickListener {
+            createBoardCol()
             goToBoardActivity()
             finishCreateBoardActivity()
         }
+    }
+
+    private fun createBoardCol() {
+        val board = BoardInfoModel()
+        board.boardName = dialog_board_name
+        board.memberCount = 1
+        board.repo = dialog_repo_name
+        BOARD_CODE = binding.tvPartCode.text.toString()
+        BOARD_NAME = dialog_board_name
+
+        databaseReference.child("board").child(BOARD_CODE).child("info").setValue(board)
     }
 
     private fun goToBoardActivity() {
