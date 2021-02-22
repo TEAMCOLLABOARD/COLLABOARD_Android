@@ -1,6 +1,7 @@
 package com.example.collaboard_android.board.ui
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -12,13 +13,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.collaboard_android.board.adapter.TaskAdapter
 import com.example.collaboard_android.board.adapter.TaskData
 import com.example.collaboard_android.board.adapter.TaskListener
+import com.example.collaboard_android.board.ui.BoardActivity.Companion.frag_board_code
 import com.example.collaboard_android.databinding.FragmentTodoBinding
 import com.example.collaboard_android.util.calDeadline
 import com.example.collaboard_android.util.getDeadlineString
 import com.example.collaboard_android.util.getLabelString
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
 import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class TodoFragment : Fragment(), TaskListener {
 
@@ -27,6 +30,8 @@ class TodoFragment : Fragment(), TaskListener {
 
     private lateinit var recyclerList: MutableList<TaskData>
     private lateinit var taskAdapter: TaskAdapter
+
+    var list: MutableList<TaskData>? = mutableListOf()
 
     private val firebaseDatabase: FirebaseDatabase = FirebaseDatabase.getInstance()
     private val databaseReference: DatabaseReference = firebaseDatabase.reference
@@ -68,6 +73,9 @@ class TodoFragment : Fragment(), TaskListener {
     }
 
     private fun addRecyclerItemToAdapter(label: String, deadline: String, description: String) {
+        list?.clear()
+        binding.recyclerviewTodo?.init(list!!, binding.tvEmptyTodo)
+
         //Todo: 더미로 넣어놓은 프로필 이미지, 사용자 이름 수정하기
         val taskData = TaskData(label, deadline, description,
                 "https://avatars.githubusercontent.com/u/52772787?s=460&u=4a9f12ef174f88ec143b70f4fcaaa8f1b2d87b43&v=4", "heewon")
@@ -82,8 +90,38 @@ class TodoFragment : Fragment(), TaskListener {
 
     private fun initRecyclerView() {
         //Todo: 서버에서 가져온 초기 데이터 뿌려주기
-        val list: MutableList<TaskData> =  mutableListOf()
-        binding.recyclerviewTodo?.init(list, binding.tvEmptyTodo)
+        databaseReference.child("board").child(frag_board_code).child("todo")
+            .child("recyclerArranging").addValueEventListener(object: ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    list?.clear()
+
+                    val map: ArrayList<*>? = snapshot.value as ArrayList<*>?
+
+                    if (map.isNullOrEmpty()) {
+                        return
+                    }
+
+                    for (i in 0 until map.size) {
+                        val hashMap: HashMap<String, String>? = map[i] as HashMap<String, String>?
+                        val taskData = TaskData(
+                            hashMap?.get("label").toString(),
+                            hashMap?.get("deadline").toString(),
+                            hashMap?.get("content").toString(),
+                            hashMap?.get("profileImg").toString(),
+                            hashMap?.get("userName").toString()
+                        )
+                        list?.add(taskData)
+                    }
+                    if (list.isNullOrEmpty()) {
+                        list = mutableListOf()
+                        binding.recyclerviewTodo?.init(list!!, binding.tvEmptyTodo)
+                    }
+                    else {
+                        binding.recyclerviewTodo?.init(list!!, binding.tvEmptyTodo)
+                    }
+                }
+                override fun onCancelled(error: DatabaseError) {}
+            })
     }
 
     private fun RecyclerView.init(list: MutableList<TaskData>, emptyTextView: TextView) {

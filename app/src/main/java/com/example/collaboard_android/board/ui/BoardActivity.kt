@@ -30,6 +30,8 @@ class BoardActivity : AppCompatActivity() {
 
         mContext = this
 
+        initValue()
+
         getIntentValue()
 
         initViewPager()
@@ -37,17 +39,20 @@ class BoardActivity : AppCompatActivity() {
         setViewPagerPaging()
     }
 
+    private fun initValue() {
+        frag_board_name = ""
+        frag_board_code = ""
+    }
+
     private fun getIntentValue() {
         val intentFrom = intent.getStringExtra("intentFrom").toString()
         Log.d("getIntentValue", intentFrom)
         when (intentFrom) {
             "BoardListActivity" -> {
-                BOARD_NAME = intent.getStringExtra("boardName").toString()
-                BOARD_CODE = intent.getStringExtra("boardCode").toString()
+                setBoardInfo()
             }
             "ShowPartCodeDialogFragment" -> {
-                BOARD_NAME = intent.getStringExtra("boardName").toString()
-                BOARD_CODE = intent.getStringExtra("boardCode").toString()
+                setBoardInfo()
             }
             else -> {
                 BOARD_NAME = "error"
@@ -55,6 +60,13 @@ class BoardActivity : AppCompatActivity() {
             }
         }
         initBoardName()
+    }
+
+    private fun setBoardInfo() {
+        BOARD_NAME = intent.getStringExtra("boardName").toString()
+        BOARD_CODE = intent.getStringExtra("boardCode").toString()
+        frag_board_name = BOARD_NAME
+        frag_board_code = BOARD_CODE
     }
 
     private fun initBoardName() {
@@ -122,5 +134,8 @@ class BoardActivity : AppCompatActivity() {
     companion object {
         lateinit var mContext: BoardActivity
             private set
+
+        var frag_board_name = ""
+        var frag_board_code = ""
     }
 }
