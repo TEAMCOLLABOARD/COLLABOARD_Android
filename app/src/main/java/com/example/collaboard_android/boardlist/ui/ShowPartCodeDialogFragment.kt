@@ -16,8 +16,6 @@ import android.view.WindowManager
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.example.collaboard_android.board.ui.BoardActivity
-import com.example.collaboard_android.boardlist.ui.BoardListActivity.Companion.BOARD_CODE
-import com.example.collaboard_android.boardlist.ui.BoardListActivity.Companion.BOARD_NAME
 import com.example.collaboard_android.boardlist.ui.CreateBoardActivity.Companion.dialog_board_name
 import com.example.collaboard_android.boardlist.ui.CreateBoardActivity.Companion.dialog_repo_name
 import com.example.collaboard_android.boardlist.ui.CreateBoardActivity.Companion.nContext
@@ -31,6 +29,9 @@ class ShowPartCodeDialogFragment : DialogFragment() {
 
     private var _binding: DialogShowParticipationCodeBinding? = null
     private val binding get() = _binding!!
+
+    private lateinit var BOARD_NAME: String
+    private lateinit var BOARD_CODE: String
 
     private val firebaseDatabase: FirebaseDatabase = FirebaseDatabase.getInstance()
     private val databaseReference: DatabaseReference = firebaseDatabase.reference
@@ -93,6 +94,7 @@ class ShowPartCodeDialogFragment : DialogFragment() {
         board.boardName = dialog_board_name
         board.memberCount = 1
         board.repo = dialog_repo_name
+
         BOARD_CODE = binding.tvPartCode.text.toString()
         BOARD_NAME = dialog_board_name
 
@@ -101,6 +103,9 @@ class ShowPartCodeDialogFragment : DialogFragment() {
 
     private fun goToBoardActivity() {
         val intent = Intent(context, BoardActivity::class.java)
+        intent.putExtra("boardName", BOARD_NAME)
+        intent.putExtra("boardCode", BOARD_CODE)
+        intent.putExtra("intentFrom", "ShowPartCodeDialogFragment")
         startActivity(intent)
     }
 

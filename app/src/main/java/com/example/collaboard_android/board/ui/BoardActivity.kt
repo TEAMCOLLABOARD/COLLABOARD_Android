@@ -3,10 +3,9 @@ package com.example.collaboard_android.board.ui
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import com.example.collaboard_android.board.adapter.TaskData
 import com.example.collaboard_android.board.adapter.ViewPagerAdapter
-import com.example.collaboard_android.boardlist.ui.BoardListActivity.Companion.BOARD_CODE
-import com.example.collaboard_android.boardlist.ui.BoardListActivity.Companion.BOARD_NAME
 import com.example.collaboard_android.databinding.ActivityBoardBinding
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
@@ -16,6 +15,9 @@ class BoardActivity : AppCompatActivity() {
     private lateinit var binding: ActivityBoardBinding
 
     private lateinit var viewPagerAdapter: ViewPagerAdapter
+
+    private lateinit var BOARD_NAME: String
+    private lateinit var BOARD_CODE: String
 
     private val firebaseDatabase: FirebaseDatabase = FirebaseDatabase.getInstance()
     private val databaseReference: DatabaseReference = firebaseDatabase.reference
@@ -28,11 +30,35 @@ class BoardActivity : AppCompatActivity() {
 
         mContext = this
 
+        getIntentValue()
+
         initViewPager()
 
         setViewPagerPaging()
+    }
 
+    private fun getIntentValue() {
+        val intentFrom = intent.getStringExtra("intentFrom").toString()
+        Log.d("getIntentValue", intentFrom)
+        when (intentFrom) {
+            "BoardListActivity" -> {
+                BOARD_NAME = intent.getStringExtra("boardName").toString()
+                BOARD_CODE = intent.getStringExtra("boardCode").toString()
+            }
+            "ShowPartCodeDialogFragment" -> {
+                BOARD_NAME = intent.getStringExtra("boardName").toString()
+                BOARD_CODE = intent.getStringExtra("boardCode").toString()
+            }
+            else -> {
+                BOARD_NAME = "error"
+                BOARD_CODE = "error"
+            }
+        }
         initBoardName()
+    }
+
+    private fun initBoardName() {
+        binding.tvRepoName.text = BOARD_NAME
     }
 
     private fun initViewPager() {
@@ -53,10 +79,6 @@ class BoardActivity : AppCompatActivity() {
         
         binding.viewpagerBoard.setPadding(margin, 0, margin, 0)
         binding.viewpagerBoard.pageMargin = (margin / 1.7).toInt()
-    }
-
-    private fun initBoardName() {
-        binding.tvRepoName.text = BOARD_NAME
     }
 
     fun getCurrentFrag() : Int {
