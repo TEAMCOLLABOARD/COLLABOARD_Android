@@ -1,4 +1,4 @@
-package com.example.collaboard_android.board.adapter
+package com.example.collaboard_android.login.data
 
 object GithubConstants {
     const val CLIENT_ID = "9e0d954b72f1492f06aa"

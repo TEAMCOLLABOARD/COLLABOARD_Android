@@ -1,4 +1,4 @@
-package com.example.collaboard_android.board.ui
+package com.example.collaboard_android.login.ui
 
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
@@ -11,10 +11,11 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
-import com.example.collaboard_android.MainActivity
-import com.example.collaboard_android.board.adapter.GithubConstants
 import com.example.collaboard_android.board.adapter.UserInfo
+import com.example.collaboard_android.boardlist.ui.BoardListActivity
 import com.example.collaboard_android.databinding.ActivitySignInOutBinding
+import com.example.collaboard_android.login.data.GithubConstants
+import com.example.collaboard_android.util.SharedPreferenceController
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.Dispatchers
@@ -49,6 +50,8 @@ open class SignInOutActivity : AppCompatActivity() {
         binding = ActivitySignInOutBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+
+        autoLogin()
 
         val state = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis())
 
@@ -192,13 +195,38 @@ open class SignInOutActivity : AppCompatActivity() {
     }
 
     private fun openDetailsActivity() {
-        val myIntent = Intent(this, MainActivity::class.java)
+        val myIntent = Intent(this, BoardListActivity::class.java)
 
         // firebase에 사용자 정보 저장(uid, token, userName, profileImg)
         user = database.getReference("users") // DB 테이블 연결
         val userInfo = UserInfo(id, accessToken, displayName, avatar)
         user.push().setValue(userInfo) // 랜덤한 문자열을 key로 할당 후, 목록 생성
 
+        // SharedPreference에 사용자 정보 저장
+        setPref()
+
         startActivity(myIntent)
+
+        finish()
+    }
+
+    private fun setPref() {
+        SharedPreferenceController.apply {
+            setAccessToken(applicationContext, accessToken)
+            setUid(applicationContext, id)
+            setUserName(applicationContext, displayName)
+            setProfileImg(applicationContext, avatar)
+        }
+    }
+
+    private fun autoLogin() {
+        SharedPreferenceController.apply {
+            // 토큰이 저장되어 있으면 (로그인한적이 있으면) BoardListActivity.kt로 이동
+            if (!getAccessToken(this@SignInOutActivity).isNullOrBlank()) {
+                val intent = Intent(this@SignInOutActivity, BoardListActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
+        }
     }
 }

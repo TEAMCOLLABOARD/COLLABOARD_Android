@@ -13,6 +13,7 @@ import com.example.collaboard_android.board.ui.BoardActivity
 import com.example.collaboard_android.boardlist.adapter.BoardListAdapter
 import com.example.collaboard_android.boardlist.adapter.BoardListData
 import com.example.collaboard_android.databinding.ActivityBoardListBinding
+import com.example.collaboard_android.util.SharedPreferenceController
 import com.google.firebase.database.*
 import java.lang.StringBuilder
 import java.util.*
@@ -28,13 +29,16 @@ class BoardListActivity : AppCompatActivity() {
     private val firebaseDatabase: FirebaseDatabase = FirebaseDatabase.getInstance()
     private val databaseReference: DatabaseReference = firebaseDatabase.reference
 
-    private val USER_NAME = "Heewon"
+    private lateinit var USER_NAME: String
+    private lateinit var PROFILE_IMG: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityBoardListBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+
+        setPrefValue()
 
         setCurrentDateOnTextView()
 
@@ -56,6 +60,11 @@ class BoardListActivity : AppCompatActivity() {
         binding.etParticipationCode.text.clear()
     }
 
+    private fun setPrefValue() {
+        USER_NAME = SharedPreferenceController.getUserName(this).toString()
+        PROFILE_IMG = SharedPreferenceController.getProfileImg(this).toString()
+    }
+
     private fun initUserProfile() {
         // 사용자 이름 설정
         val nameString = StringBuilder("Hi, ")
@@ -64,7 +73,7 @@ class BoardListActivity : AppCompatActivity() {
 
         //Todo: 사용자 프로필 이미지 설정
         Glide.with(this)
-            .load("https://avatars.githubusercontent.com/u/52772787?s=460&u=4a9f12ef174f88ec143b70f4fcaaa8f1b2d87b43&v=4")
+            .load(PROFILE_IMG)
             .into(binding.imgProfile)
     }
 
