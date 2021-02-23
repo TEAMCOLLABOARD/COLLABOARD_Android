@@ -13,21 +13,19 @@ import com.example.collaboard_android.board.adapter.TaskAdapter
 import com.example.collaboard_android.board.adapter.TaskData
 import com.example.collaboard_android.board.adapter.TaskListener
 import com.example.collaboard_android.board.ui.BoardActivity.Companion.frag_board_code
-import com.example.collaboard_android.databinding.FragmentDoneBinding
+import com.example.collaboard_android.R
 import com.example.collaboard_android.util.calDeadline
 import com.example.collaboard_android.util.getDeadlineString
 import com.example.collaboard_android.util.getLabelString
 import com.google.firebase.database.*
+import kotlinx.android.synthetic.main.fragment_done.*
 
 class DoneFragment : Fragment(), TaskListener {
-
-    private var _binding: FragmentDoneBinding? = null
-    private val binding get() = _binding!!
 
     private lateinit var recyclerList: MutableList<TaskData>
     private lateinit var taskAdapter: TaskAdapter
 
-    var list: MutableList<TaskData>? = mutableListOf()
+    var list: MutableList<TaskData> = mutableListOf()
 
     private val firebaseDatabase: FirebaseDatabase = FirebaseDatabase.getInstance()
     private val databaseReference: DatabaseReference = firebaseDatabase.reference
@@ -39,24 +37,23 @@ class DoneFragment : Fragment(), TaskListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentDoneBinding.inflate(layoutInflater)
-        return binding.root
+        return inflater.inflate(R.layout.fragment_done, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.tvEmptyDone.visibility = View.GONE
-
-        itemTouchHelper.attachToRecyclerView(binding.recyclerviewDone)
+        tv_empty_done.visibility = View.GONE
 
         initRecyclerView()
+
+        itemTouchHelper.attachToRecyclerView(recyclerview_done)
 
         initAddButton()
     }
 
     private fun initAddButton() {
-        binding.btnAdd.setOnClickListener {
+        btn_add.setOnClickListener {
             val addTaskDialog = AddTaskDialogFragment { description: String, label: Int, pickDate: IntArray ->
                 val labelString = getLabelString(label)
                 val deadline = calDeadline(pickDate)
@@ -69,8 +66,8 @@ class DoneFragment : Fragment(), TaskListener {
     }
 
     private fun addRecyclerItemToAdapter(label: String, deadline: String, description: String) {
-        list?.clear()
-        binding.recyclerviewDone?.init(list!!, binding.tvEmptyDone)
+        list.clear()
+        recyclerview_done?.init(list, tv_empty_done)
 
         //Todo: 더미로 넣어놓은 프로필 이미지, 사용자 이름 수정하기
         val taskData = TaskData(label, deadline, description,
@@ -87,13 +84,14 @@ class DoneFragment : Fragment(), TaskListener {
     private fun initRecyclerView() {
         //Todo: 서버에서 가져온 초기 데이터 뿌려주기
         databaseReference.child("board").child(frag_board_code).child("done")
-            .child("recyclerArranging").addValueEventListener(object: ValueEventListener {
+            .addValueEventListener(object: ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    list?.clear()
+                    list.clear()
 
-                    val map: ArrayList<*>? = snapshot.value as ArrayList<*>?
+                    val map: ArrayList<*>? = snapshot.child("recyclerArranging").value as ArrayList<*>?
 
                     if (map.isNullOrEmpty()) {
+                        recyclerview_done?.init(list, tv_empty_done)
                         return
                     }
 
@@ -106,26 +104,29 @@ class DoneFragment : Fragment(), TaskListener {
                             hashMap?.get("profileImg").toString(),
                             hashMap?.get("userName").toString()
                         )
-                        list?.add(taskData)
+                        list.add(taskData)
                     }
-                    if (list.isNullOrEmpty()) {
-                        list = mutableListOf()
-                        binding.recyclerviewDone?.init(list!!, binding.tvEmptyDone)
-                    }
-                    else {
-                        binding.recyclerviewDone?.init(list!!, binding.tvEmptyDone)
-                    }
+                    recyclerview_done?.init(list, tv_empty_done)
                 }
                 override fun onCancelled(error: DatabaseError) {}
             })
     }
 
-    private fun RecyclerView.init(list: MutableList<TaskData>, emptyTextView: TextView) {
+    private fun RecyclerView.init(list: MutableList<TaskData>?, emptyTextView: TextView) {
         this.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        taskAdapter = TaskAdapter(list, this@DoneFragment)
-        this.adapter = taskAdapter
+        if (!list.isNullOrEmpty()) {
+            taskAdapter = TaskAdapter(list, this@DoneFragment)
+            this.adapter = taskAdapter
 
-        recyclerList = list
+            recyclerList = list
+        }
+        else {
+            val mList = mutableListOf<TaskData>()
+            taskAdapter = TaskAdapter(mList, this@DoneFragment)
+            this.adapter = taskAdapter
+
+            recyclerList = mList
+        }
 
         // recyclerview dataset 바뀔 때마다 notifyDataSetChanged()
         taskAdapter.notifyDataSetChanged()
@@ -177,22 +178,14 @@ class DoneFragment : Fragment(), TaskListener {
                         return true
                     }
 
-                    override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-
-                    }
-
+                    override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {}
                 }
 
         ItemTouchHelper(simpleItemTouchCallback)
     }
 
     override fun setEmptyList(visibility: Int, recyclerView: Int, emptyTextView: Int) {
-        binding.recyclerviewDone.visibility = visibility
-        binding.tvEmptyDone.visibility = visibility
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+        recyclerview_done.visibility = visibility
+        tv_empty_done.visibility = visibility
     }
 }
