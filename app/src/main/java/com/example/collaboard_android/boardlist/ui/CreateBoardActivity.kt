@@ -27,6 +27,8 @@ class CreateBoardActivity : AppCompatActivity() {
 
         nContext = this
 
+        initCompanionValue()
+
         setKeyListenerOnEditText()
 
         initEditImageButton()
@@ -34,6 +36,11 @@ class CreateBoardActivity : AppCompatActivity() {
         initRepoSpinner()
 
         initCreateButton()
+    }
+
+    private fun initCompanionValue() {
+        dialog_board_name = ""
+        dialog_repo_name = ""
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -115,6 +122,9 @@ class CreateBoardActivity : AppCompatActivity() {
 
     private fun initCreateButton() {
         binding.btnCreate.setOnClickListener {
+            dialog_board_name = binding.etBoardName.text.toString()
+            dialog_repo_name = selectRepo.toString()
+
             val partCodeDialog = ShowPartCodeDialogFragment()
             partCodeDialog.show(supportFragmentManager, "show_part_code_dialog")
         }
@@ -127,5 +137,8 @@ class CreateBoardActivity : AppCompatActivity() {
     companion object {
         lateinit var nContext: CreateBoardActivity
         private set
+
+        var dialog_board_name = ""
+        var dialog_repo_name = ""
     }
 }

@@ -6,50 +6,54 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.collaboard_android.R
 import com.example.collaboard_android.board.adapter.TaskAdapter
 import com.example.collaboard_android.board.adapter.TaskData
 import com.example.collaboard_android.board.adapter.TaskListener
-import com.example.collaboard_android.databinding.FragmentInProgressBinding
+import com.example.collaboard_android.board.ui.BoardActivity.Companion.frag_board_code
+import com.example.collaboard_android.R
 import com.example.collaboard_android.util.calDeadline
 import com.example.collaboard_android.util.getDeadlineString
 import com.example.collaboard_android.util.getLabelString
+import com.google.firebase.database.*
+import kotlinx.android.synthetic.main.fragment_in_progress.*
 
 class InProgressFragment : Fragment(), TaskListener {
 
-    private var _binding: FragmentInProgressBinding? = null
-    private val binding get() = _binding!!
-
     private lateinit var recyclerList: MutableList<TaskData>
     private lateinit var taskAdapter: TaskAdapter
+
+    var list: MutableList<TaskData> = mutableListOf()
+
+    private val firebaseDatabase: FirebaseDatabase = FirebaseDatabase.getInstance()
+    private val databaseReference: DatabaseReference = firebaseDatabase.reference
+
+    val boardContext: BoardActivity = BoardActivity.mContext
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentInProgressBinding.inflate(layoutInflater)
-        return binding.root
+    ): View? {
+        return inflater.inflate(R.layout.fragment_in_progress, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.tvEmptyInProgress.visibility = View.GONE
-
-        itemTouchHelper.attachToRecyclerView(binding.recyclerviewInProgress)
+        tv_empty_in_progress.visibility = View.GONE
 
         initRecyclerView()
+
+        itemTouchHelper.attachToRecyclerView(recyclerview_in_progress)
 
         initAddButton()
     }
 
     private fun initAddButton() {
-        binding.btnAdd.setOnClickListener {
+        btn_add.setOnClickListener {
             val addTaskDialog = AddTaskDialogFragment { description: String, label: Int, pickDate: IntArray ->
                 val labelString = getLabelString(label)
                 val deadline = calDeadline(pickDate)
@@ -62,28 +66,68 @@ class InProgressFragment : Fragment(), TaskListener {
     }
 
     private fun addRecyclerItemToAdapter(label: String, deadline: String, description: String) {
+        list.clear()
+        recyclerview_in_progress?.init(list, tv_empty_in_progress)
+
         //Todo: 더미로 넣어놓은 프로필 이미지, 사용자 이름 수정하기
         val taskData = TaskData(label, deadline, description,
-                ResourcesCompat.getDrawable(activity!!.resources, R.drawable.image_profile, null), "heewon")
+                "https://avatars.githubusercontent.com/u/52772787?s=460&u=4a9f12ef174f88ec143b70f4fcaaa8f1b2d87b43&v=4", "heewon")
 
         taskAdapter.addItem(taskData)
         taskAdapter.notifyDataSetChanged()
 
         //recyclerList.add(taskData)
+
+        boardContext.putInProgressTaskInDatabase(taskAdapter.getList())
     }
 
     private fun initRecyclerView() {
         //Todo: 서버에서 가져온 초기 데이터 뿌려주기
-        val list: MutableList<TaskData> = mutableListOf()
-        binding.recyclerviewInProgress?.init(list, binding.tvEmptyInProgress)
+        databaseReference.child("board").child(frag_board_code).child("inProgress")
+            .addValueEventListener(object: ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    list.clear()
+                    list = mutableListOf()
+
+                    val map: ArrayList<*>? = snapshot.child("recyclerArranging").value as ArrayList<*>?
+
+                    if (map.isNullOrEmpty()) {
+                        recyclerview_in_progress?.init(list, tv_empty_in_progress)
+                        return
+                    }
+
+                    for (i in 0 until map.size) {
+                        val hashMap: HashMap<String, String>? = map[i] as HashMap<String, String>?
+                        val taskData = TaskData(
+                            hashMap?.get("label").toString(),
+                            hashMap?.get("deadline").toString(),
+                            hashMap?.get("content").toString(),
+                            hashMap?.get("profileImg").toString(),
+                            hashMap?.get("userName").toString()
+                        )
+                        list.add(taskData)
+                    }
+                    recyclerview_in_progress?.init(list, tv_empty_in_progress)
+                }
+                override fun onCancelled(error: DatabaseError) {}
+            })
     }
 
-    private fun RecyclerView.init(list: MutableList<TaskData>, emptyTextView: TextView) {
+    private fun RecyclerView.init(list: MutableList<TaskData>?, emptyTextView: TextView) {
         this.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        taskAdapter = TaskAdapter(list, this@InProgressFragment)
-        this.adapter = taskAdapter
+        if (!list.isNullOrEmpty()) {
+            taskAdapter = TaskAdapter(list, this@InProgressFragment)
+            this.adapter = taskAdapter
 
-        recyclerList = list
+            recyclerList = list
+        }
+        else {
+            val mList = mutableListOf<TaskData>()
+            taskAdapter = TaskAdapter(mList, this@InProgressFragment)
+            this.adapter = taskAdapter
+
+            recyclerList = mList
+        }
 
         // recyclerview dataset 바뀔 때마다 notifyDataSetChanged()
         taskAdapter.notifyDataSetChanged()
@@ -117,8 +161,7 @@ class InProgressFragment : Fragment(), TaskListener {
                         val adapter = recyclerView.adapter as TaskAdapter
                         recyclerList = adapter.getList()
 
-                        //val aContext: BoardActivity = BoardActivity.mContext as BoardActivity
-                        //aContext.putSecondRecyclerInDatabase(recyclerList)
+                        boardContext.putInProgressTaskInDatabase(recyclerList)
                     }
 
                     override fun onMove(
@@ -136,22 +179,14 @@ class InProgressFragment : Fragment(), TaskListener {
                         return true
                     }
 
-                    override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-
-                    }
-
+                    override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {}
                 }
 
         ItemTouchHelper(simpleItemTouchCallback)
     }
 
     override fun setEmptyList(visibility: Int, recyclerView: Int, emptyTextView: Int) {
-        binding.recyclerviewInProgress.visibility = visibility
-        binding.tvEmptyInProgress.visibility = visibility
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+        recyclerview_in_progress.visibility = visibility
+        tv_empty_in_progress.visibility = visibility
     }
 }

@@ -1,12 +1,19 @@
 package com.example.collaboard_android.boardlist.ui
 
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.KeyEvent
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
+import com.example.collaboard_android.board.ui.BoardActivity
 import com.example.collaboard_android.boardlist.adapter.BoardListAdapter
 import com.example.collaboard_android.boardlist.adapter.BoardListData
 import com.example.collaboard_android.databinding.ActivityBoardListBinding
+import com.google.firebase.database.*
 import java.lang.StringBuilder
 import java.util.*
 
@@ -18,6 +25,11 @@ class BoardListActivity : AppCompatActivity() {
 
     private lateinit var currentDate: Calendar
 
+    private val firebaseDatabase: FirebaseDatabase = FirebaseDatabase.getInstance()
+    private val databaseReference: DatabaseReference = firebaseDatabase.reference
+
+    private val USER_NAME = "Heewon"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityBoardListBinding.inflate(layoutInflater)
@@ -26,15 +38,34 @@ class BoardListActivity : AppCompatActivity() {
 
         setCurrentDateOnTextView()
 
+        initUserProfile()
+
         setClickListenerOnAddBtn()
 
         initRecyclerView()
+
+        setKeyListenerOnEditText()
     }
 
     override fun onResume() {
         super.onResume()
+        initValue()
+    }
 
+    private fun initValue() {
         binding.etParticipationCode.text.clear()
+    }
+
+    private fun initUserProfile() {
+        // 사용자 이름 설정
+        val nameString = StringBuilder("Hi, ")
+        nameString.append(USER_NAME)
+        binding.tvName.text = nameString
+
+        //Todo: 사용자 프로필 이미지 설정
+        Glide.with(this)
+            .load("https://avatars.githubusercontent.com/u/52772787?s=460&u=4a9f12ef174f88ec143b70f4fcaaa8f1b2d87b43&v=4")
+            .into(binding.imgProfile)
     }
 
     private fun initRecyclerView() {
@@ -82,5 +113,43 @@ class BoardListActivity : AppCompatActivity() {
             val intent = Intent(this, CreateBoardActivity::class.java)
             startActivity(intent)
         }
+    }
+
+    // 참여코드 입력 후 키보드의 엔터 or 완료 버튼 클릭 시
+    private fun setKeyListenerOnEditText() {
+        binding.etParticipationCode.setOnKeyListener { _, keyCode, _ ->
+            if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == EditorInfo.IME_ACTION_DONE) {
+                hideKeyboard()
+                goToBoardActivity()
+                return@setOnKeyListener true
+            }
+            false
+        }
+    }
+
+    private fun hideKeyboard() {
+        val imm = this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(binding.etParticipationCode.windowToken, 0)
+    }
+
+    private fun goToBoardActivity() {
+        var boardName = ""
+        val boardCode = binding.etParticipationCode.text.toString().trim().toUpperCase(Locale.ROOT)
+        databaseReference.child("board").child(boardCode).child("info")
+            .addListenerForSingleValueEvent(object: ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    boardName = snapshot.child("boardName").value.toString()
+
+                    // BoardActivity.kt로 이동
+                    val intent = Intent(this@BoardListActivity, BoardActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP or
+                            Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    intent.putExtra("boardName", boardName)
+                    intent.putExtra("boardCode", boardCode)
+                    intent.putExtra("intentFrom", "BoardListActivity")
+                    startActivity(intent)
+                }
+                override fun onCancelled(error: DatabaseError) {}
+            })
     }
 }
