@@ -4,12 +4,18 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
+import android.widget.Toast
 import com.example.collaboard_android.board.adapter.TaskData
 import com.example.collaboard_android.board.adapter.UserInfo
 import com.example.collaboard_android.board.adapter.ViewPagerAdapter
 import com.example.collaboard_android.databinding.ActivityBoardBinding
+import com.example.collaboard_android.model.NotificationModel
 import com.example.collaboard_android.util.SharedPreferenceController
 import com.google.firebase.database.*
+import com.google.gson.Gson
+import okhttp3.*
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import java.io.IOException
 
 class BoardActivity : AppCompatActivity() {
 
@@ -221,6 +227,75 @@ class BoardActivity : AppCompatActivity() {
         }
         databaseReference.child("board").child(BOARD_CODE).child("done")
                 .updateChildren(recyclerMap as Map<String, Any>)
+    }
+
+    fun sendPushNotification(startFrag: Int, finFrag: Int) {
+        if (startFrag != finFrag) {
+            Toast.makeText(this, "$startFrag -> $finFrag", Toast.LENGTH_SHORT).show()
+
+            val userPath = databaseReference.child("board").child(BOARD_CODE).child("users")
+            // push 알림 보내기
+            userPath.addListenerForSingleValueEvent(object: ValueEventListener {
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            val map: Map<String, *> = snapshot.value as Map<String, *>
+                            val keySet: Set<String> = map.keys
+                            val list: ArrayList<String> = ArrayList()
+                            list.addAll(keySet)
+
+                            for (i in 0 until list.size) {
+                                if (list[i] == UID)
+                                    continue
+                                else if (!list[i].isNullOrEmpty()) {
+                                    userPath.child(list[i]).addListenerForSingleValueEvent(object: ValueEventListener {
+                                        override fun onDataChange(snapshot: DataSnapshot) {
+                                            sendFcm(startFrag, finFrag, snapshot.child("token").value.toString())
+                                        }
+                                        override fun onCancelled(error: DatabaseError) {}
+                                    })
+                                }
+                            }
+                        }
+                        override fun onCancelled(error: DatabaseError) {}
+                    })
+        }
+    }
+
+    private fun sendFcm(startFrag: Int, finFrag: Int, pushToken: String) {
+        val gson = Gson()
+        val notificationModel = NotificationModel()
+
+        // background push
+        notificationModel.apply {
+            to = pushToken
+            notification.title = USER_NAME
+            notification.text = "$startFrag -> $finFrag"
+        }
+
+        // foreground push
+        notificationModel.data.apply {
+            title = USER_NAME
+            text = "$startFrag -> $finFrag"
+        }
+
+        val requestBody = RequestBody.create("application/json; charset=utf8".toMediaTypeOrNull(),
+                gson.toJson(notificationModel))
+
+        val request = Request.Builder()
+                .header("Content-Type", "application/json")
+                .addHeader("Authorization", "key=AAAAwuxUFck:APA91bHuao1MBOGFCeSAhTC2ovYXzyu7JjT_8QevbF1lLB_WRv-e1-iWFqQvRqhgwGW9ewOLQibnvBn5bSyvZipOlic4wvLiNH1mBZeHzcN6lyN95xUQBXyz_UtpUprW7OjSO--6X2xB")
+                .url("https://fcm.googleapis.com/fcm/send")
+                .post(requestBody)
+                .build()
+
+        val okHttpClient = OkHttpClient()
+        okHttpClient.newCall(request).enqueue(object: Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                Log.d("okhttptest", e.message.toString())
+            }
+            override fun onResponse(call: Call, response: Response) {
+                Log.d("okhttptest", response.message)
+            }
+        })
     }
 
     companion object {
