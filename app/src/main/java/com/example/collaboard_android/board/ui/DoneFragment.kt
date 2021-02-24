@@ -14,12 +14,14 @@ import com.example.collaboard_android.board.adapter.TaskData
 import com.example.collaboard_android.board.adapter.TaskListener
 import com.example.collaboard_android.board.ui.BoardActivity.Companion.frag_board_code
 import com.example.collaboard_android.R
+import com.example.collaboard_android.model.DeadlineModel
 import com.example.collaboard_android.util.SharedPreferenceController
 import com.example.collaboard_android.util.calDeadline
 import com.example.collaboard_android.util.getDeadlineString
 import com.example.collaboard_android.util.getLabelString
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.fragment_done.*
+import java.lang.StringBuilder
 
 class DoneFragment : Fragment(), TaskListener {
 
@@ -76,6 +78,8 @@ class DoneFragment : Fragment(), TaskListener {
                 val deadline = calDeadline(pickDate)
                 val deadlineString = getDeadlineString(deadline)
 
+                // 데드라인 등록 함수
+                putDeadlineInDatabase(label, pickDate, description)
                 addRecyclerItemToAdapter(labelString, deadlineString, description)
             }
             addTaskDialog.show(childFragmentManager, "add_task_dialog")
@@ -83,17 +87,33 @@ class DoneFragment : Fragment(), TaskListener {
     }
 
     private fun addRecyclerItemToAdapter(label: String, deadline: String, description: String) {
-        list.clear()
-        recyclerview_done?.init(list, tv_empty_done)
-
         val taskData = TaskData(label, deadline, description, PROFILE_IMG, USER_NAME)
 
         taskAdapter.addItem(taskData)
         taskAdapter.notifyDataSetChanged()
 
-        //recyclerList.add(taskData)
-
         boardContext.putDoneTaskInDatabase(taskAdapter.getList())
+    }
+
+    private fun putDeadlineInDatabase(label: Int, pickDate: IntArray, description: String) {
+        val deadlineModel = DeadlineModel()
+        deadlineModel.apply {
+            date = getFormedDate(pickDate)
+            this.label = label
+            content = description
+        }
+        databaseReference.child("users").child(UID)
+                .child("deadline").child(frag_board_code).push().setValue(deadlineModel)
+    }
+
+    private fun getFormedDate(pickDate: IntArray) : String {
+        val dateString = StringBuilder(pickDate[0].toString())
+                .append("-")
+                .append(pickDate[1].toString())
+                .append("-")
+                .append(pickDate[2].toString())
+
+        return dateString.toString()
     }
 
     private fun initRecyclerView() {
@@ -126,21 +146,12 @@ class DoneFragment : Fragment(), TaskListener {
             })
     }
 
-    private fun RecyclerView.init(list: MutableList<TaskData>?, emptyTextView: TextView) {
+    private fun RecyclerView.init(list: MutableList<TaskData>, emptyTextView: TextView) {
         this.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        if (!list.isNullOrEmpty()) {
-            taskAdapter = TaskAdapter(list, this@DoneFragment)
-            this.adapter = taskAdapter
+        taskAdapter = TaskAdapter(list, this@DoneFragment)
+        this.adapter = taskAdapter
 
-            recyclerList = list
-        }
-        else {
-            val mList = mutableListOf<TaskData>()
-            taskAdapter = TaskAdapter(mList, this@DoneFragment)
-            this.adapter = taskAdapter
-
-            recyclerList = mList
-        }
+        recyclerList = list
 
         // recyclerview dataset 바뀔 때마다 notifyDataSetChanged()
         taskAdapter.notifyDataSetChanged()

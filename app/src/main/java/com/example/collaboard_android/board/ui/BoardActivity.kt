@@ -187,44 +187,23 @@ class BoardActivity : AppCompatActivity() {
         }, 500)
     }
 
-    fun putTodoTaskInDatabase(list: MutableList<TaskData>?) {
+    fun putTodoTaskInDatabase(list: MutableList<TaskData>) {
         val recyclerMap = HashMap<String, MutableList<TaskData>>()
-
-        if (list.isNullOrEmpty()) {
-            list?.clear()
-            recyclerMap["recyclerArranging"] = list!!
-        }
-        else {
-            recyclerMap["recyclerArranging"] = list
-        }
+        recyclerMap["recyclerArranging"] = list
         databaseReference.child("board").child(BOARD_CODE).child("todo")
                 .updateChildren(recyclerMap as Map<String, Any>)
     }
 
-    fun putInProgressTaskInDatabase(list: MutableList<TaskData>?) {
+    fun putInProgressTaskInDatabase(list: MutableList<TaskData>) {
         val recyclerMap = HashMap<String, MutableList<TaskData>>()
-
-        if (list.isNullOrEmpty()) {
-            list?.clear()
-            recyclerMap["recyclerArranging"] = list!!
-        }
-        else {
-            recyclerMap["recyclerArranging"] = list
-        }
+        recyclerMap["recyclerArranging"] = list
         databaseReference.child("board").child(BOARD_CODE).child("inProgress")
                 .updateChildren(recyclerMap as Map<String, Any>)
     }
 
-    fun putDoneTaskInDatabase(list: MutableList<TaskData>?) {
+    fun putDoneTaskInDatabase(list: MutableList<TaskData>) {
         val recyclerMap = HashMap<String, MutableList<TaskData>>()
-
-        if (list.isNullOrEmpty()) {
-            list?.clear()
-            recyclerMap["recyclerArranging"] = list!!
-        }
-        else {
-            recyclerMap["recyclerArranging"] = list
-        }
+        recyclerMap["recyclerArranging"] = list
         databaseReference.child("board").child(BOARD_CODE).child("done")
                 .updateChildren(recyclerMap as Map<String, Any>)
     }
