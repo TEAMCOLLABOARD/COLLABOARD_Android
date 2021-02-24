@@ -92,7 +92,7 @@ class ShowPartCodeDialogFragment : DialogFragment() {
     private fun createBoardCol() {
         val board = BoardInfoModel()
         board.boardName = dialog_board_name
-        board.memberCount = 1
+        board.memberCount = 0
         board.repo = dialog_repo_name
 
         BOARD_CODE = binding.tvPartCode.text.toString()
