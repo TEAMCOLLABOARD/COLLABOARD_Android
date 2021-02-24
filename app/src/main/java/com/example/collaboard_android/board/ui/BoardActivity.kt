@@ -229,7 +229,7 @@ class BoardActivity : AppCompatActivity() {
                                 else if (!list[i].isNullOrEmpty()) {
                                     userPath.child(list[i]).addListenerForSingleValueEvent(object: ValueEventListener {
                                         override fun onDataChange(snapshot: DataSnapshot) {
-                                            sendFcm(startFrag, finFrag, snapshot.child("token").value.toString())
+                                            sendFcm(startFrag, finFrag, snapshot.child("pushToken").value.toString())
                                         }
                                         override fun onCancelled(error: DatabaseError) {}
                                     })
