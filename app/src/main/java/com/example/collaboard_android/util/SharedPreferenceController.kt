@@ -8,6 +8,7 @@ object SharedPreferenceController {
     private val UID = "UID"
     private val USER_NAME = "USER_NAME"
     private val PROFILE_IMG = "PROFILE_IMG"
+    private val PUSH_TOKEN = "PUSH_TOKEN"
 
     // token
     fun setAccessToken(context: Context, authorization: String?) {
@@ -79,6 +80,19 @@ object SharedPreferenceController {
     fun clearProfileImg(context: Context) {
         val pref = context.getSharedPreferences(PROFILE_IMG, Context.MODE_PRIVATE)
         pref.edit().clear().apply()
+    }
+
+    // push token
+    fun setPushToken(context: Context, pushToken: String?) {
+        val pref = context.getSharedPreferences(PUSH_TOKEN, Context.MODE_PRIVATE)
+        val editor = pref.edit()
+        editor.putString("PUSH_TOKEN", pushToken)
+        editor.apply()
+    }
+
+    fun getPushToken(context: Context) : String? {
+        val pref = context.getSharedPreferences(PUSH_TOKEN, Context.MODE_PRIVATE)
+        return pref.getString("PUSH_TOKEN", "")
     }
 
     // 전체 삭제

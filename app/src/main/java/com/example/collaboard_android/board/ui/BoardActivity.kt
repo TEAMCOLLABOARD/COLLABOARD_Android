@@ -30,6 +30,7 @@ class BoardActivity : AppCompatActivity() {
     private lateinit var UID: String
     private lateinit var USER_NAME: String
     private lateinit var PROFILE_IMG: String
+    private lateinit var PUSH_TOKEN: String
 
     private val firebaseDatabase: FirebaseDatabase = FirebaseDatabase.getInstance()
     private val databaseReference: DatabaseReference = firebaseDatabase.reference
@@ -66,6 +67,7 @@ class BoardActivity : AppCompatActivity() {
             UID = getUid(this@BoardActivity).toString()
             USER_NAME = getUserName(this@BoardActivity).toString()
             PROFILE_IMG = getProfileImg(this@BoardActivity).toString()
+            PUSH_TOKEN = getPushToken(this@BoardActivity).toString()
         }
     }
 
@@ -121,7 +123,7 @@ class BoardActivity : AppCompatActivity() {
     // board - users에 해당 user uid 등록
     private fun passUserInfoToServer() {
         val userPath = databaseReference.child("board").child(BOARD_CODE).child("users")
-        val userModel = UserInfo(UID, TOKEN, USER_NAME, PROFILE_IMG)
+        val userModel = UserInfo(UID, TOKEN, USER_NAME, PROFILE_IMG, PUSH_TOKEN)
 
         userPath.addListenerForSingleValueEvent(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -227,7 +229,7 @@ class BoardActivity : AppCompatActivity() {
                                 else if (!list[i].isNullOrEmpty()) {
                                     userPath.child(list[i]).addListenerForSingleValueEvent(object: ValueEventListener {
                                         override fun onDataChange(snapshot: DataSnapshot) {
-                                            sendFcm(startFrag, finFrag, snapshot.child("token").value.toString())
+                                            sendFcm(startFrag, finFrag, snapshot.child("pushToken").value.toString())
                                         }
                                         override fun onCancelled(error: DatabaseError) {}
                                     })
