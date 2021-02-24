@@ -16,8 +16,10 @@ import com.example.collaboard_android.boardlist.ui.BoardListActivity
 import com.example.collaboard_android.databinding.ActivitySignInOutBinding
 import com.example.collaboard_android.login.data.GithubConstants
 import com.example.collaboard_android.util.SharedPreferenceController
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -41,6 +43,7 @@ open class SignInOutActivity : AppCompatActivity() {
     var email = ""
     var avatar = ""
     var accessToken = ""
+    var pushToken = ""
 
     private lateinit var user: DatabaseReference
     private val database: FirebaseDatabase = FirebaseDatabase.getInstance() // 파이어베이스 데이터베이스 연동
@@ -189,6 +192,9 @@ open class SignInOutActivity : AppCompatActivity() {
             val githubAvatarURL = jsonObject.getString("avatar_url")
             avatar = githubAvatarURL
 
+            // push token
+            pushToken = setPushToken()
+
             // 성공한 경우
             openDetailsActivity()
         }
@@ -199,7 +205,7 @@ open class SignInOutActivity : AppCompatActivity() {
 
         // firebase에 사용자 정보 저장(uid, token, userName, profileImg)
         user = database.getReference("users") // DB 테이블 연결
-        val userInfo = UserInfo(id, accessToken, displayName, avatar)
+        val userInfo = UserInfo(id, accessToken, displayName, avatar, pushToken)
         user.child(id).setValue(userInfo) // 랜덤한 문자열을 key로 할당 후, 목록 생성
 
         // SharedPreference에 사용자 정보 저장
@@ -217,6 +223,16 @@ open class SignInOutActivity : AppCompatActivity() {
             setUserName(applicationContext, displayName)
             setProfileImg(applicationContext, avatar)
         }
+    }
+
+    private fun setPushToken() : String {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            if (!task.isSuccessful)
+                return@OnCompleteListener
+            val token = task.result
+            SharedPreferenceController.setPushToken(applicationContext, token)
+        })
+        return SharedPreferenceController.getPushToken(applicationContext).toString()
     }
 
     private fun autoLogin() {
