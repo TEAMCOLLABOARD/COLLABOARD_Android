@@ -189,7 +189,7 @@ open class SignInOutActivity : AppCompatActivity() {
             val githubAvatarURL = jsonObject.getString("avatar_url")
             avatar = githubAvatarURL
 
-            // 성공시 다음 액티비티로 이동
+            // 성공한 경우
             openDetailsActivity()
         }
     }
@@ -200,7 +200,7 @@ open class SignInOutActivity : AppCompatActivity() {
         // firebase에 사용자 정보 저장(uid, token, userName, profileImg)
         user = database.getReference("users") // DB 테이블 연결
         val userInfo = UserInfo(id, accessToken, displayName, avatar)
-        user.push().setValue(userInfo) // 랜덤한 문자열을 key로 할당 후, 목록 생성
+        user.child(id).setValue(userInfo) // 랜덤한 문자열을 key로 할당 후, 목록 생성
 
         // SharedPreference에 사용자 정보 저장
         setPref()
