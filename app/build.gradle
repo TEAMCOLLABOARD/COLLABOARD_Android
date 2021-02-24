@@ -74,5 +74,12 @@ dependencies {
     implementation 'com.google.firebase:firebase-messaging-ktx'
     implementation 'com.google.firebase:firebase-analytics-ktx'
 
+    // Gson
+    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+
+    // okhttp
+    implementation "com.squareup.okhttp3:okhttp:4.9.0"
+
     implementation 'com.android.support:multidex:1.0.3'
 }

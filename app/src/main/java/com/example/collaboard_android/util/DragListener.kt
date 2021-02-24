@@ -187,6 +187,7 @@ class DragListener internal constructor(private val listener: TaskListener) : Vi
                     putTodoTaskInDatabase(todoRecyclerList)
                     putInProgressTaskInDatabase(inProgressRecyclerList)
                     putDoneTaskInDatabase(doneRecyclerList)
+                    sendPushNotification(startFrag, finFrag)
                 }
 
             }

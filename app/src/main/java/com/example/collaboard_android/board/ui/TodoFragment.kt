@@ -14,6 +14,7 @@ import com.example.collaboard_android.board.adapter.TaskData
 import com.example.collaboard_android.board.adapter.TaskListener
 import com.example.collaboard_android.board.ui.BoardActivity.Companion.frag_board_code
 import com.example.collaboard_android.R
+import com.example.collaboard_android.util.SharedPreferenceController
 import com.example.collaboard_android.util.calDeadline
 import com.example.collaboard_android.util.getDeadlineString
 import com.example.collaboard_android.util.getLabelString
@@ -24,6 +25,11 @@ import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 class TodoFragment : Fragment(), TaskListener {
+
+    private lateinit var TOKEN: String
+    private lateinit var UID: String
+    private lateinit var USER_NAME: String
+    private lateinit var PROFILE_IMG: String
 
     private lateinit var recyclerList: MutableList<TaskData>
     private lateinit var taskAdapter: TaskAdapter
@@ -46,6 +52,8 @@ class TodoFragment : Fragment(), TaskListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setPrefValue()
+
         tv_empty_todo.visibility = View.GONE
 
         initRecyclerView()
@@ -53,6 +61,15 @@ class TodoFragment : Fragment(), TaskListener {
         itemTouchHelper.attachToRecyclerView(recyclerview_todo)
 
         initAddButton()
+    }
+
+    private fun setPrefValue() {
+        SharedPreferenceController.apply {
+            TOKEN = getAccessToken(context!!).toString()
+            UID = getUid(context!!).toString()
+            USER_NAME = getUserName(context!!).toString()
+            PROFILE_IMG = getProfileImg(context!!).toString()
+        }
     }
 
     private fun initAddButton() {
@@ -72,9 +89,7 @@ class TodoFragment : Fragment(), TaskListener {
         list.clear()
         recyclerview_todo?.init(list, tv_empty_todo)
 
-        //Todo: 더미로 넣어놓은 프로필 이미지, 사용자 이름 수정하기
-        val taskData = TaskData(label, deadline, description,
-                "https://avatars.githubusercontent.com/u/52772787?s=460&u=4a9f12ef174f88ec143b70f4fcaaa8f1b2d87b43&v=4", "heewon")
+        val taskData = TaskData(label, deadline, description, PROFILE_IMG, USER_NAME)
 
         taskAdapter.addItem(taskData)
         taskAdapter.notifyDataSetChanged()
@@ -85,7 +100,6 @@ class TodoFragment : Fragment(), TaskListener {
     }
 
     private fun initRecyclerView() {
-        //Todo: 서버에서 가져온 초기 데이터 뿌려주기
         databaseReference.child("board").child(frag_board_code).child("todo")
             .addValueEventListener(object: ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
