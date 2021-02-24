@@ -192,9 +192,6 @@ open class SignInOutActivity : AppCompatActivity() {
             val githubAvatarURL = jsonObject.getString("avatar_url")
             avatar = githubAvatarURL
 
-            // push token
-            pushToken = setPushToken()
-
             // 성공한 경우
             openDetailsActivity()
         }
@@ -202,6 +199,8 @@ open class SignInOutActivity : AppCompatActivity() {
 
     private fun openDetailsActivity() {
         val myIntent = Intent(this, BoardListActivity::class.java)
+
+        setPushToken()
 
         // firebase에 사용자 정보 저장(uid, token, userName, profileImg)
         user = database.getReference("users") // DB 테이블 연결
@@ -225,14 +224,13 @@ open class SignInOutActivity : AppCompatActivity() {
         }
     }
 
-    private fun setPushToken() : String {
+    private fun setPushToken(){
         FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
             if (!task.isSuccessful)
                 return@OnCompleteListener
-            val token = task.result
-            SharedPreferenceController.setPushToken(applicationContext, token)
+            pushToken = task.result.toString()
+            SharedPreferenceController.setPushToken(applicationContext, pushToken)
         })
-        return SharedPreferenceController.getPushToken(applicationContext).toString()
     }
 
     private fun autoLogin() {
