@@ -210,9 +210,35 @@ class BoardActivity : AppCompatActivity() {
                 .updateChildren(recyclerMap as Map<String, Any>)
     }
 
-    fun sendPushNotification(startFrag: Int, finFrag: Int) {
+    private fun getPushMsgContent(startFrag: Int, finFrag: Int, addPosition: Int, addFlag: Boolean) : String {
+        var startFragStr = ""
+        var finFragStr = ""
+        var addPositionStr = ""
+
+        startFragStr = getPositionStr(startFrag)
+        finFragStr = getPositionStr(finFrag)
+        addPositionStr = getPositionStr(addPosition)
+
+        return if (addFlag)
+        // 카드를 새로 추가했을 경우
+            "$USER_NAME added task to $addPositionStr"
+        else
+        // 카드를 옮겼을 경우
+            "$USER_NAME moved task from $startFragStr to $finFragStr"
+    }
+
+    private fun getPositionStr(position: Int) : String {
+        return when (position) {
+            0 -> "To do"
+            1 -> "In progress"
+            else -> "Done"
+        }
+    }
+
+    fun sendPushNotification(startFrag: Int, finFrag: Int, addPosition: Int, addFlag: Boolean) {
         if (startFrag != finFrag) {
-            Toast.makeText(this, "$startFrag -> $finFrag", Toast.LENGTH_SHORT).show()
+            val pushMsg = getPushMsgContent(startFrag, finFrag, addPosition, addFlag)
+            Toast.makeText(this, pushMsg, Toast.LENGTH_SHORT).show()
 
             val userPath = databaseReference.child("board").child(BOARD_CODE).child("users")
             // push 알림 보내기
@@ -226,10 +252,10 @@ class BoardActivity : AppCompatActivity() {
                             for (i in 0 until list.size) {
                                 if (list[i] == UID)
                                     continue
-                                else if (!list[i].isNullOrEmpty()) {
+                                else if (list[i].isNotEmpty()) {
                                     userPath.child(list[i]).addListenerForSingleValueEvent(object: ValueEventListener {
                                         override fun onDataChange(snapshot: DataSnapshot) {
-                                            sendFcm(startFrag, finFrag, snapshot.child("pushToken").value.toString())
+                                            sendFcm(snapshot.child("pushToken").value.toString(), pushMsg)
                                         }
                                         override fun onCancelled(error: DatabaseError) {}
                                     })
@@ -241,21 +267,21 @@ class BoardActivity : AppCompatActivity() {
         }
     }
 
-    private fun sendFcm(startFrag: Int, finFrag: Int, pushToken: String) {
+    private fun sendFcm(pushToken: String, pushMsg: String) {
         val gson = Gson()
         val notificationModel = NotificationModel()
 
         // background push
         notificationModel.apply {
             to = pushToken
-            notification.title = USER_NAME
-            notification.text = "$startFrag -> $finFrag"
+            notification.title = "COLLABOARD"
+            notification.text = pushMsg
         }
 
         // foreground push
         notificationModel.data.apply {
-            title = USER_NAME
-            text = "$startFrag -> $finFrag"
+            title = BOARD_NAME
+            text = pushMsg
         }
 
         val requestBody = RequestBody.create("application/json; charset=utf8".toMediaTypeOrNull(),
