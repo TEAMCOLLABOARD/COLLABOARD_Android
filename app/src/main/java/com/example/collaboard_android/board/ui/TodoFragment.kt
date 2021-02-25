@@ -82,6 +82,7 @@ class TodoFragment : Fragment(), TaskListener {
                 val deadlineString = getDeadlineString(deadline)
 
                 // 데드라인 등록 함수
+                boardContext.sendPushNotification(-1, -2, 0, true)
                 putDeadlineInDatabase(label, pickDate, description)
                 addRecyclerItemToAdapter(labelString, deadlineString, description)
             }
