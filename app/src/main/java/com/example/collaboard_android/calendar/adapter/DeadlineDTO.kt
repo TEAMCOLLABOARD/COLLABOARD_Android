@@ -1,4 +1,4 @@
-package com.example.collaboard_android.board.adapter
+package com.example.collaboard_android.calendar.adapter
 
 data class DeadlineDTO(
     val creator: String? = "",
