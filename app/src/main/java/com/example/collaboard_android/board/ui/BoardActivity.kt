@@ -75,10 +75,16 @@ class BoardActivity : AppCompatActivity() {
         val intentFrom = intent.getStringExtra("intentFrom").toString()
         Log.d("getIntentValue", intentFrom)
         when (intentFrom) {
+            // 보드 리스트의 > 버튼을 눌러 입장하는 경우
             "BoardListActivity" -> {
                 setBoardInfo()
             }
+            // 새 보드를 만들어서 입장하는 경우
             "ShowPartCodeDialogFragment" -> {
+                setBoardInfo()
+            }
+            // 참여코드를 입력해서 입장하는 경우
+            "ParticipationCode" -> {
                 setBoardInfo()
             }
             else -> {

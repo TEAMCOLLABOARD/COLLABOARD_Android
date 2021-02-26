@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.KeyEvent
+import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -13,6 +14,7 @@ import com.example.collaboard_android.board.ui.BoardActivity
 import com.example.collaboard_android.boardlist.adapter.BoardListAdapter
 import com.example.collaboard_android.boardlist.adapter.BoardListData
 import com.example.collaboard_android.databinding.ActivityBoardListBinding
+import com.example.collaboard_android.util.ItemClickListener
 import com.example.collaboard_android.util.SharedPreferenceController
 import com.google.firebase.database.*
 import java.lang.StringBuilder
@@ -93,6 +95,8 @@ class BoardListActivity : AppCompatActivity() {
                 LinearLayoutManager.VERTICAL, false)
 
         getPartCodeList()
+
+        initItemClickListener()
     }
 
     private fun getPartCodeList() {
@@ -134,6 +138,18 @@ class BoardListActivity : AppCompatActivity() {
         } else {
             "$memberCountInt members"
         }
+    }
+
+    private fun initItemClickListener() {
+        boardListAdapter.setItemClickListener(object: ItemClickListener {
+            override fun onClickItem(view: View, position: Int) {
+                val intent = Intent(this@BoardListActivity, BoardActivity::class.java)
+                intent.putExtra("boardName", boardList[position].boardName)
+                intent.putExtra("boardCode", partCodeList[position])
+                intent.putExtra("intentFrom", "BoardListActivity")
+                startActivity(intent)
+            }
+        })
     }
 
     private fun setCurrentDateOnTextView() {
@@ -201,13 +217,13 @@ class BoardListActivity : AppCompatActivity() {
                     databaseReference.child("users").child(UID)
                             .child("boardlist").child(boardCode).setValue(boardName)
 
-                    // BoardActivity.kt로 이동
+                    // 참여코드 입력을 통해 BoardActivity.kt로 이동
                     val intent = Intent(this@BoardListActivity, BoardActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP or
                             Intent.FLAG_ACTIVITY_CLEAR_TOP
                     intent.putExtra("boardName", boardName)
                     intent.putExtra("boardCode", boardCode)
-                    intent.putExtra("intentFrom", "BoardListActivity")
+                    intent.putExtra("intentFrom", "ParticipationCode")
                     startActivity(intent)
                 }
                 override fun onCancelled(error: DatabaseError) {}
