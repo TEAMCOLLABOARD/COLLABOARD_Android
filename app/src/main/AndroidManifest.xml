@@ -21,7 +21,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".board.ui.CalendarActivity" />
+        <activity android:name=".calendar.ui.CalendarActivity" />
         <activity
             android:name=".boardlist.ui.CreateBoardActivity"
             android:theme="@style/Theme.boardTheme" />

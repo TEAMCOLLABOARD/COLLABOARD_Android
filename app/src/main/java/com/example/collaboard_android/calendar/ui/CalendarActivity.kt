@@ -1,12 +1,12 @@
-package com.example.collaboard_android.board.ui
+package com.example.collaboard_android.calendar.ui
 
 import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.applikeysolutions.cosmocalendar.selection.SingleSelectionManager
-import com.example.collaboard_android.board.adapter.DeadlineAdapter
-import com.example.collaboard_android.board.adapter.DeadlineDTO
+import com.example.collaboard_android.calendar.adapter.DeadlineAdapter
+import com.example.collaboard_android.calendar.adapter.DeadlineDTO
 import com.example.collaboard_android.databinding.ActivityCalendarBinding
 import com.google.firebase.database.*
 import java.util.*
