@@ -1,4 +1,4 @@
-package com.example.collaboard_android.board.adapter
+package com.example.collaboard_android.calendar.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
