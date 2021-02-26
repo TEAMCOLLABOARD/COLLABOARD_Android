@@ -17,6 +17,7 @@ import com.example.collaboard_android.util.SharedPreferenceController
 import com.google.firebase.database.*
 import java.lang.StringBuilder
 import java.util.*
+import kotlin.collections.ArrayList
 
 class BoardListActivity : AppCompatActivity() {
 
@@ -24,12 +25,16 @@ class BoardListActivity : AppCompatActivity() {
 
     private lateinit var boardListAdapter: BoardListAdapter
 
+    var partCodeList: ArrayList<String> = ArrayList()
+    var boardList: MutableList<BoardListData> = mutableListOf()
+
     private lateinit var currentDate: Calendar
 
     private val firebaseDatabase: FirebaseDatabase = FirebaseDatabase.getInstance()
     private val databaseReference: DatabaseReference = firebaseDatabase.reference
 
     private lateinit var USER_NAME: String
+    private lateinit var UID: String
     private lateinit var PROFILE_IMG: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,14 +51,15 @@ class BoardListActivity : AppCompatActivity() {
 
         setClickListenerOnAddBtn()
 
-        initRecyclerView()
-
         setKeyListenerOnEditText()
     }
 
     override fun onResume() {
         super.onResume()
+
         initValue()
+
+        initRecyclerView()
     }
 
     private fun initValue() {
@@ -61,8 +67,11 @@ class BoardListActivity : AppCompatActivity() {
     }
 
     private fun setPrefValue() {
-        USER_NAME = SharedPreferenceController.getUserName(this).toString()
-        PROFILE_IMG = SharedPreferenceController.getProfileImg(this).toString()
+        SharedPreferenceController.apply {
+            USER_NAME = getUserName(this@BoardListActivity).toString()
+            UID = getUid(this@BoardListActivity).toString()
+            PROFILE_IMG = getProfileImg(this@BoardListActivity).toString()
+        }
     }
 
     private fun initUserProfile() {
@@ -80,14 +89,51 @@ class BoardListActivity : AppCompatActivity() {
     private fun initRecyclerView() {
         boardListAdapter = BoardListAdapter(this)
         binding.recyclerviewBoardList.adapter = boardListAdapter
-        binding.recyclerviewBoardList.layoutManager = LinearLayoutManager(this)
+        binding.recyclerviewBoardList.layoutManager = LinearLayoutManager(this,
+                LinearLayoutManager.VERTICAL, false)
 
-        boardListAdapter.data = mutableListOf(
-            BoardListData("COLLABOARD", "2 members"),
-            BoardListData("MOMO", "4 members"),
-            BoardListData("STORM", "3 members")
-        )
-        boardListAdapter.notifyDataSetChanged()
+        getPartCodeList()
+    }
+
+    private fun getPartCodeList() {
+        partCodeList.clear()
+        boardList.clear()
+        databaseReference.child("users").child(UID).child("boardlist")
+                .addValueEventListener(object: ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val map: Map<String, *>? = snapshot.value as Map<String, *>?
+                        val keySet: Set<String>? = map?.keys
+                        if (keySet != null) {
+                            partCodeList.addAll(keySet)
+                        }
+
+                        for (i in 0 until partCodeList.size) {
+                            if (partCodeList.isNotEmpty()) {
+                                databaseReference.child("board").child(partCodeList[i]).child("info")
+                                        .addListenerForSingleValueEvent(object: ValueEventListener {
+                                            override fun onDataChange(snapshot: DataSnapshot) {
+                                                val boardName = snapshot.child("boardName").value.toString()
+                                                val memberCount = snapshot.child("memberCount").value.toString()
+                                                boardList.add(BoardListData(boardName, getMemberCountStr(memberCount)))
+                                                boardListAdapter.data = boardList
+                                                boardListAdapter.notifyDataSetChanged()
+                                            }
+                                            override fun onCancelled(error: DatabaseError) {}
+                                        })
+                            }
+                        }
+                    }
+                    override fun onCancelled(error: DatabaseError) {}
+                })
+    }
+
+    private fun getMemberCountStr(memberCount: String) : String {
+        val memberCountInt = memberCount.toInt()
+        return if (memberCountInt <= 1) {
+            "$memberCountInt member"
+        } else {
+            "$memberCountInt members"
+        }
     }
 
     private fun setCurrentDateOnTextView() {
@@ -144,10 +190,16 @@ class BoardListActivity : AppCompatActivity() {
     private fun goToBoardActivity() {
         var boardName = ""
         val boardCode = binding.etParticipationCode.text.toString().trim().toUpperCase(Locale.ROOT)
+
+        // info에서 해당 code에 해당하는 보드 이름 가져오기
         databaseReference.child("board").child(boardCode).child("info")
             .addListenerForSingleValueEvent(object: ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     boardName = snapshot.child("boardName").value.toString()
+
+                    // 보드 리스트에 해당 보드 추가
+                    databaseReference.child("users").child(UID)
+                            .child("boardlist").child(boardCode).setValue(boardName)
 
                     // BoardActivity.kt로 이동
                     val intent = Intent(this@BoardListActivity, BoardActivity::class.java)
