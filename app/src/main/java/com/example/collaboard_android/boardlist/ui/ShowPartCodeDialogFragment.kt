@@ -21,6 +21,7 @@ import com.example.collaboard_android.boardlist.ui.CreateBoardActivity.Companion
 import com.example.collaboard_android.boardlist.ui.CreateBoardActivity.Companion.nContext
 import com.example.collaboard_android.databinding.DialogShowParticipationCodeBinding
 import com.example.collaboard_android.model.BoardInfoModel
+import com.example.collaboard_android.util.SharedPreferenceController
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import java.util.*
@@ -32,6 +33,8 @@ class ShowPartCodeDialogFragment : DialogFragment() {
 
     private lateinit var BOARD_NAME: String
     private lateinit var BOARD_CODE: String
+
+    private lateinit var UID: String
 
     private val firebaseDatabase: FirebaseDatabase = FirebaseDatabase.getInstance()
     private val databaseReference: DatabaseReference = firebaseDatabase.reference
@@ -45,11 +48,17 @@ class ShowPartCodeDialogFragment : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setPrefValue()
+
         generateParticipationCode()
 
         initCopyButton()
 
         initCloseButton()
+    }
+
+    private fun setPrefValue() {
+        UID = SharedPreferenceController.getUid(context!!).toString()
     }
 
     private fun generateParticipationCode() {
@@ -98,7 +107,11 @@ class ShowPartCodeDialogFragment : DialogFragment() {
         BOARD_CODE = binding.tvPartCode.text.toString()
         BOARD_NAME = dialog_board_name
 
-        databaseReference.child("board").child(BOARD_CODE).child("info").setValue(board)
+        databaseReference.apply {
+            child("board").child(BOARD_CODE).child("info").setValue(board)
+            child("users").child(UID).child("boardlist")
+                    .child(BOARD_CODE).setValue(BOARD_NAME)
+        }
     }
 
     private fun goToBoardActivity() {
