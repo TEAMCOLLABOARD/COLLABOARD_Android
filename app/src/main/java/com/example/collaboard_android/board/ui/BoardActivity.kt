@@ -187,14 +187,18 @@ class BoardActivity : AppCompatActivity() {
     }
 
     private fun initIssueButton() {
-        // Todo: Issue 뷰와 연결하기
+        binding.imgbtnIssue.setOnClickListener {
+            // Todo: Issue 뷰와 연결하기
+        }
     }
 
     private fun initCalendarButton() {
-        val intent = Intent(this, CalendarActivity::class.java)
-        intent.putExtra("boardName", BOARD_NAME)
-        intent.putExtra("boardCode", BOARD_CODE)
-        startActivity(intent)
+        binding.imgbtnCalendar.setOnClickListener {
+            val intent = Intent(this, CalendarActivity::class.java)
+            intent.putExtra("boardName", BOARD_NAME)
+            intent.putExtra("boardCode", BOARD_CODE)
+            startActivity(intent)
+        }
     }
 
     private fun initBackButton() {
