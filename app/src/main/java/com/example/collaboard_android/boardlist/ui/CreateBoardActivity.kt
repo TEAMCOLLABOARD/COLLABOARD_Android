@@ -40,6 +40,8 @@ class CreateBoardActivity : AppCompatActivity() {
 
         initCompanionValue()
 
+        initBackButton()
+
         getRepoList()
 
         setKeyListenerOnEditText()
@@ -160,6 +162,12 @@ class CreateBoardActivity : AppCompatActivity() {
 
             val partCodeDialog = ShowPartCodeDialogFragment()
             partCodeDialog.show(supportFragmentManager, "show_part_code_dialog")
+        }
+    }
+
+    private fun initBackButton() {
+        binding.imgbtnBack.setOnClickListener {
+            finish()
         }
     }
 
