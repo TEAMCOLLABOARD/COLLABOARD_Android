@@ -1,5 +1,6 @@
 package com.example.collaboard_android.board.ui
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -8,6 +9,7 @@ import android.widget.Toast
 import com.example.collaboard_android.board.adapter.TaskData
 import com.example.collaboard_android.board.adapter.UserInfo
 import com.example.collaboard_android.board.adapter.ViewPagerAdapter
+import com.example.collaboard_android.calendar.ui.CalendarActivity
 import com.example.collaboard_android.databinding.ActivityBoardBinding
 import com.example.collaboard_android.model.NotificationModel
 import com.example.collaboard_android.util.SharedPreferenceController
@@ -48,6 +50,12 @@ class BoardActivity : AppCompatActivity() {
         setPrefValue()
 
         getIntentValue()
+
+        initIssueButton()
+
+        initCalendarButton()
+
+        initBackButton()
 
         initViewPager()
 
@@ -176,6 +184,23 @@ class BoardActivity : AppCompatActivity() {
                     }
                     override fun onCancelled(error: DatabaseError) {}
                 })
+    }
+
+    private fun initIssueButton() {
+        // Todo: Issue 뷰와 연결하기
+    }
+
+    private fun initCalendarButton() {
+        val intent = Intent(this, CalendarActivity::class.java)
+        intent.putExtra("boardName", BOARD_NAME)
+        intent.putExtra("boardCode", BOARD_CODE)
+        startActivity(intent)
+    }
+
+    private fun initBackButton() {
+        binding.imgbtnBackBoard.setOnClickListener {
+            finish()
+        }
     }
 
     fun getCurrentFrag() : Int {

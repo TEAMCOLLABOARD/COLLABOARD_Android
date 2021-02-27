@@ -43,6 +43,30 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <ImageButton
+            android:id="@+id/imgbtn_calendar"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/btn_calendar_white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_percent="0.05" />
+
+        <ImageButton
+            android:id="@+id/imgbtn_issue"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/btn_issue_white"
+            app:layout_constraintBottom_toBottomOf="@+id/imgbtn_calendar"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toStartOf="@+id/imgbtn_calendar"
+            app:layout_constraintTop_toTopOf="@+id/imgbtn_calendar"
+            app:layout_constraintWidth_percent="0.055" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
