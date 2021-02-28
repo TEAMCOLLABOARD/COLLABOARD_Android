@@ -14,9 +14,11 @@ import com.example.collaboard_android.board.ui.BoardActivity
 import com.example.collaboard_android.boardlist.adapter.BoardListAdapter
 import com.example.collaboard_android.boardlist.adapter.BoardListData
 import com.example.collaboard_android.databinding.ActivityBoardListBinding
+import com.example.collaboard_android.setting.SettingActivity
 import com.example.collaboard_android.util.ItemClickListener
 import com.example.collaboard_android.util.SharedPreferenceController
 import com.google.firebase.database.*
+import com.example.collaboard_android.R
 import java.lang.StringBuilder
 import java.util.*
 import kotlin.collections.ArrayList
@@ -50,6 +52,8 @@ class BoardListActivity : AppCompatActivity() {
         setCurrentDateOnTextView()
 
         initUserProfile()
+
+        goToSettingActivity()
 
         setClickListenerOnAddBtn()
 
@@ -86,6 +90,14 @@ class BoardListActivity : AppCompatActivity() {
         Glide.with(this)
             .load(PROFILE_IMG)
             .into(binding.imgProfile)
+    }
+
+    private fun goToSettingActivity() {
+        binding.imgProfile.setOnClickListener {
+            val intent = Intent(this, SettingActivity::class.java)
+            startActivity(intent)
+            overridePendingTransition(R.anim.horizontal_left_in, R.anim.horizontal_right_out)
+        }
     }
 
     private fun initRecyclerView() {

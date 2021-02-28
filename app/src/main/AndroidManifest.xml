@@ -12,6 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.COLLABOARD_Android">
+        <activity android:name=".setting.SettingActivity"
+            android:theme="@style/Theme.boardTheme" />
         <activity
             android:name=".login.ui.SignInOutActivity"
             android:theme="@style/Theme.boardTheme" >
@@ -40,7 +42,6 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-
     </application>
 
 </manifest>
