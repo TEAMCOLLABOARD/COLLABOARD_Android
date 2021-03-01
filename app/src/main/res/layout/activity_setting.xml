@@ -44,7 +44,7 @@
         android:id="@+id/img_profile"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="22dp"
         android:elevation="20dp"
         android:src="@drawable/image_profile"
         app:layout_constraintDimensionRatio="1:1"
@@ -57,35 +57,35 @@
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
         android:fontFamily="@font/notosanskrregular"
         android:includeFontPadding="false"
         android:text="user name"
         android:textColor="@color/black_description"
         android:textSize="14dp"
-        app:layout_constraintBottom_toTopOf="@+id/tv_user_name"
-        app:layout_constraintEnd_toEndOf="@+id/tv_user_name"
-        app:layout_constraintStart_toStartOf="@+id/tv_user_name" />
+        app:layout_constraintEnd_toEndOf="@+id/img_profile"
+        app:layout_constraintStart_toStartOf="@+id/img_profile"
+        app:layout_constraintTop_toBottomOf="@+id/img_profile" />
 
     <TextView
         android:id="@+id/tv_user_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
         android:fontFamily="@font/notosanskrbold"
         android:includeFontPadding="false"
         android:text="Heewon"
         android:textColor="@color/black_description"
         android:textSize="22dp"
-        app:layout_constraintEnd_toEndOf="@+id/img_profile"
-        app:layout_constraintStart_toStartOf="@+id/img_profile"
-        app:layout_constraintTop_toBottomOf="@+id/img_profile" />
+        app:layout_constraintEnd_toEndOf="@+id/textView4"
+        app:layout_constraintStart_toStartOf="@+id/textView4"
+        app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
     <View
         android:id="@+id/view5"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginStart="50dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="30dp"
         android:layout_marginEnd="50dp"
         android:background="@color/gray_divider"
         app:layout_constraintEnd_toEndOf="parent"
