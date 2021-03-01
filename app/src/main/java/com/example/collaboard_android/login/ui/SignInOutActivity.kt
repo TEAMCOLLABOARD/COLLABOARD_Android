@@ -7,9 +7,8 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.webkit.WebResourceRequest
-import android.webkit.WebView
-import android.webkit.WebViewClient
+import android.util.Log
+import android.webkit.*
 import androidx.appcompat.app.AppCompatActivity
 import com.example.collaboard_android.board.adapter.UserInfo
 import com.example.collaboard_android.boardlist.ui.BoardListActivity
@@ -17,8 +16,7 @@ import com.example.collaboard_android.databinding.ActivitySignInOutBinding
 import com.example.collaboard_android.login.data.GithubConstants
 import com.example.collaboard_android.util.SharedPreferenceController
 import com.google.android.gms.tasks.OnCompleteListener
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
 import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -71,6 +69,9 @@ open class SignInOutActivity : AppCompatActivity() {
     fun setupGithubWebViewDialog(url: String) {
         githubdialog = Dialog(this)
         val webView = WebView(this)
+
+        removeWebViewCache(webView)
+
         webView.isVerticalScrollBarEnabled = false
         webView.isHorizontalScrollBarEnabled = false
         webView.webViewClient = GithubWebViewClient()
@@ -78,6 +79,25 @@ open class SignInOutActivity : AppCompatActivity() {
         webView.loadUrl(url)
         githubdialog.setContentView(webView)
         githubdialog.show()
+    }
+
+    //  웹 뷰 캐시 제거
+    private fun removeWebViewCache(webView: WebView) {
+        webView.apply {
+            clearHistory()
+            clearCache(true)
+            clearView()
+        }
+        val cookieSyncManager = CookieSyncManager.createInstance(this)
+        val cookieManager = CookieManager.getInstance()
+        cookieManager.setAcceptCookie(true)
+        cookieManager.removeSessionCookie()
+        cookieSyncManager.sync()
+
+        this.deleteDatabase("webview.db")
+        this.deleteDatabase("webviewCache.db")
+
+        CookieManager.getInstance().removeAllCookie()
     }
 
     // A client to know about WebView navigations
@@ -180,32 +200,77 @@ open class SignInOutActivity : AppCompatActivity() {
             val githubId = jsonObject.getInt("id")
             id = githubId.toString()
 
-            // GitHub Display Name
-            val githubDisplayName = jsonObject.getString("login")
-            displayName = githubDisplayName
-
-            // GitHub Email
-            val githubEmail = jsonObject.getString("email")
-            email = githubEmail
-
-            // GitHub Profile Avatar URL
-            val githubAvatarURL = jsonObject.getString("avatar_url")
-            avatar = githubAvatarURL
-
-            // 성공한 경우
-            openDetailsActivity()
+            hasUidInDatabase(id, jsonObject)
         }
+    }
+
+    private fun hasUidInDatabase(uid: String, jsonObject: JSONObject) {
+        var flag = false
+        database.reference.child("users").addListenerForSingleValueEvent(object: ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val map: Map<String, *>? = snapshot.value as Map<String, *>?
+                val keySet: Set<String>? = map?.keys
+                val arrayList: ArrayList<String> = ArrayList()
+                if (keySet != null) {
+                    arrayList.addAll(keySet)
+                    Log.d("logoutTest", arrayList.toString())
+                }
+                for (i in 0 until arrayList.size) {
+                    // 해당 uid가 DB에 있을 경우
+                    if (arrayList[i] == uid) {
+                        flag = true
+                        database.reference.child("users").child(arrayList[i])
+                            .addListenerForSingleValueEvent(object: ValueEventListener {
+                                override fun onDataChange(snapshot: DataSnapshot) {
+
+                                    SharedPreferenceController.apply {
+                                        setProfileImg(applicationContext, snapshot.child("profileImg").value.toString())
+                                        setPushToken(applicationContext, snapshot.child("pushToken").value.toString())
+                                        setAccessToken(applicationContext, snapshot.child("token").value.toString())
+                                        setUid(applicationContext, snapshot.child("uid").value.toString())
+                                        setUserName(applicationContext, snapshot.child("userName").value.toString())
+                                    }
+
+                                    val intent = Intent(this@SignInOutActivity, BoardListActivity::class.java)
+                                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP or
+                                            Intent.FLAG_ACTIVITY_CLEAR_TOP
+                                    startActivity(intent)
+                                    finish()
+
+                                }
+                                override fun onCancelled(error: DatabaseError) {}
+                            })
+                    }
+                }
+                // 해당 uid가 DB에 없을 경우
+                if (!flag)
+                    getUserInfo(jsonObject)
+            }
+            override fun onCancelled(error: DatabaseError) {}
+        })
+    }
+
+    private fun getUserInfo(jsonObject: JSONObject) {
+        // GitHub Display Name
+        val githubDisplayName = jsonObject.getString("login")
+        displayName = githubDisplayName
+
+        // GitHub Email
+        val githubEmail = jsonObject.getString("email")
+        email = githubEmail
+
+        // GitHub Profile Avatar URL
+        val githubAvatarURL = jsonObject.getString("avatar_url")
+        avatar = githubAvatarURL
+
+        // 성공한 경우
+        openDetailsActivity()
     }
 
     private fun openDetailsActivity() {
         val myIntent = Intent(this, BoardListActivity::class.java)
 
         setPushToken()
-
-        // firebase에 사용자 정보 저장(uid, token, userName, profileImg)
-        user = database.getReference("users") // DB 테이블 연결
-        val userInfo = UserInfo(id, accessToken, displayName, avatar, pushToken)
-        user.child(id).setValue(userInfo) // 랜덤한 문자열을 key로 할당 후, 목록 생성
 
         // SharedPreference에 사용자 정보 저장
         setPref()
@@ -226,10 +291,18 @@ open class SignInOutActivity : AppCompatActivity() {
 
     private fun setPushToken(){
         FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
-            if (!task.isSuccessful)
+            if (!task.isSuccessful) {
+                Log.d("fcm-pushToken", "fail")
                 return@OnCompleteListener
+            }
+            Log.d("fcm-pushToken", "success: ${task.result.toString()}")
             pushToken = task.result.toString()
             SharedPreferenceController.setPushToken(applicationContext, pushToken)
+
+            // firebase에 사용자 정보 저장(uid, token, userName, profileImg)
+            user = database.getReference("users") // DB 테이블 연결
+            val userInfo = UserInfo(id, accessToken, displayName, avatar, pushToken)
+            user.child(id).setValue(userInfo) // 랜덤한 문자열을 key로 할당 후, 목록 생성
         })
     }
 

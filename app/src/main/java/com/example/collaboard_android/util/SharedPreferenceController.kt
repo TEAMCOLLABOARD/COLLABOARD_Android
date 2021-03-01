@@ -95,11 +95,17 @@ object SharedPreferenceController {
         return pref.getString("PUSH_TOKEN", "")
     }
 
+    fun clearPushToken(context: Context) {
+        val pref = context.getSharedPreferences(PUSH_TOKEN, Context.MODE_PRIVATE)
+        pref.edit().clear().apply()
+    }
+
     // 전체 삭제
     fun clearAll(context: Context) {
         clearAccessToken(context)
         clearUid(context)
         clearUserName(context)
         clearProfileImg(context)
+        clearPushToken(context)
     }
 }
