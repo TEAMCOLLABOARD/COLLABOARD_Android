@@ -16,8 +16,7 @@ import com.example.collaboard_android.databinding.ActivitySignInOutBinding
 import com.example.collaboard_android.login.data.GithubConstants
 import com.example.collaboard_android.util.SharedPreferenceController
 import com.google.android.gms.tasks.OnCompleteListener
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
 import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -201,21 +200,71 @@ open class SignInOutActivity : AppCompatActivity() {
             val githubId = jsonObject.getInt("id")
             id = githubId.toString()
 
-            // GitHub Display Name
-            val githubDisplayName = jsonObject.getString("login")
-            displayName = githubDisplayName
-
-            // GitHub Email
-            val githubEmail = jsonObject.getString("email")
-            email = githubEmail
-
-            // GitHub Profile Avatar URL
-            val githubAvatarURL = jsonObject.getString("avatar_url")
-            avatar = githubAvatarURL
-
-            // 성공한 경우
-            openDetailsActivity()
+            hasUidInDatabase(id, jsonObject)
         }
+    }
+
+    private fun hasUidInDatabase(uid: String, jsonObject: JSONObject) {
+        var flag = false
+        database.reference.child("users").addListenerForSingleValueEvent(object: ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val map: Map<String, *>? = snapshot.value as Map<String, *>?
+                val keySet: Set<String>? = map?.keys
+                val arrayList: ArrayList<String> = ArrayList()
+                if (keySet != null) {
+                    arrayList.addAll(keySet)
+                    Log.d("logoutTest", arrayList.toString())
+                }
+                for (i in 0 until arrayList.size) {
+                    // 해당 uid가 DB에 있을 경우
+                    if (arrayList[i] == uid) {
+                        flag = true
+                        database.reference.child("users").child(arrayList[i])
+                            .addListenerForSingleValueEvent(object: ValueEventListener {
+                                override fun onDataChange(snapshot: DataSnapshot) {
+
+                                    SharedPreferenceController.apply {
+                                        setProfileImg(applicationContext, snapshot.child("profileImg").value.toString())
+                                        setPushToken(applicationContext, snapshot.child("pushToken").value.toString())
+                                        setAccessToken(applicationContext, snapshot.child("token").value.toString())
+                                        setUid(applicationContext, snapshot.child("uid").value.toString())
+                                        setUserName(applicationContext, snapshot.child("userName").value.toString())
+                                    }
+
+                                    val intent = Intent(this@SignInOutActivity, BoardListActivity::class.java)
+                                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP or
+                                            Intent.FLAG_ACTIVITY_CLEAR_TOP
+                                    startActivity(intent)
+                                    finish()
+
+                                }
+                                override fun onCancelled(error: DatabaseError) {}
+                            })
+                    }
+                }
+                // 해당 uid가 DB에 없을 경우
+                if (!flag)
+                    getUserInfo(jsonObject)
+            }
+            override fun onCancelled(error: DatabaseError) {}
+        })
+    }
+
+    private fun getUserInfo(jsonObject: JSONObject) {
+        // GitHub Display Name
+        val githubDisplayName = jsonObject.getString("login")
+        displayName = githubDisplayName
+
+        // GitHub Email
+        val githubEmail = jsonObject.getString("email")
+        email = githubEmail
+
+        // GitHub Profile Avatar URL
+        val githubAvatarURL = jsonObject.getString("avatar_url")
+        avatar = githubAvatarURL
+
+        // 성공한 경우
+        openDetailsActivity()
     }
 
     private fun openDetailsActivity() {
