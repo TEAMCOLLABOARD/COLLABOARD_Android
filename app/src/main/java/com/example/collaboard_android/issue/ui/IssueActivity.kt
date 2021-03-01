@@ -3,9 +3,8 @@ package com.example.collaboard_android.issue.ui
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
-import com.example.collaboard_android.MainActivity
+import com.example.collaboard_android.board.ui.BoardActivity
 import com.example.collaboard_android.databinding.ActivityIssueBinding
 import com.example.collaboard_android.issue.network.GitHubService
 import com.example.collaboard_android.issue.network.IssueDTO
@@ -30,11 +29,14 @@ class IssueActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view) // binding 변수의 root 뷰를 가져와서 setContentView 메소드의 인자로 전달
 
+        // create 버튼 클릭
         binding.btnCreate.setOnClickListener {
 
+            // 필수 정보(title) 입력한 경우 -> github으로 데이터 전송
             if (binding.etTitle.text.toString().trim().isNotEmpty()) {
                 creatIssue()
-            } else {
+
+            } else { // title 입력하지 않은 경우 -> 버튼 비활성화
                 Toast.makeText(applicationContext, "title을 입력해주세요", Toast.LENGTH_SHORT)
                     .show()
             }
@@ -60,24 +62,26 @@ class IssueActivity : AppCompatActivity() {
             jsonObject.toString().toRequestBody("application/json".toMediaTypeOrNull())
 
         // 데이터 전송
+        // Todo: userName, repoName 연결(intent)
         server?.createIssueCall(
             "aerimforest",
             "test",
             requestBody
         )
             ?.enqueue(object : Callback<IssueDTO> {
-                // 데이터 전송에 실패한 경우
+                // 데이터 전송 실패한 경우
                 override fun onFailure(call: Call<IssueDTO>?, t: Throwable?) {
                 }
 
-                // 데이터 전송 성공
+                // 데이터 전송 성공한 경우
                 override fun onResponse(call: Call<IssueDTO>?, response: Response<IssueDTO>?) {
                     if (response != null) {
                     }
                 }
             })
 
-        val myIntent = Intent(this, MainActivity::class.java)
+        // Issue 생성 후 BoardActivity로 돌아감
+        val myIntent = Intent(this, BoardActivity::class.java)
         startActivity(myIntent)
     }
 }
