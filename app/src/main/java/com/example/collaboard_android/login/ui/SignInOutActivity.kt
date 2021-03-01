@@ -7,9 +7,8 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.webkit.WebResourceRequest
-import android.webkit.WebView
-import android.webkit.WebViewClient
+import android.util.Log
+import android.webkit.*
 import androidx.appcompat.app.AppCompatActivity
 import com.example.collaboard_android.board.adapter.UserInfo
 import com.example.collaboard_android.boardlist.ui.BoardListActivity
@@ -71,6 +70,9 @@ open class SignInOutActivity : AppCompatActivity() {
     fun setupGithubWebViewDialog(url: String) {
         githubdialog = Dialog(this)
         val webView = WebView(this)
+
+        removeWebViewCache(webView)
+
         webView.isVerticalScrollBarEnabled = false
         webView.isHorizontalScrollBarEnabled = false
         webView.webViewClient = GithubWebViewClient()
@@ -78,6 +80,25 @@ open class SignInOutActivity : AppCompatActivity() {
         webView.loadUrl(url)
         githubdialog.setContentView(webView)
         githubdialog.show()
+    }
+
+    //  웹 뷰 캐시 제거
+    private fun removeWebViewCache(webView: WebView) {
+        webView.apply {
+            clearHistory()
+            clearCache(true)
+            clearView()
+        }
+        val cookieSyncManager = CookieSyncManager.createInstance(this)
+        val cookieManager = CookieManager.getInstance()
+        cookieManager.setAcceptCookie(true)
+        cookieManager.removeSessionCookie()
+        cookieSyncManager.sync()
+
+        this.deleteDatabase("webview.db")
+        this.deleteDatabase("webviewCache.db")
+
+        CookieManager.getInstance().removeAllCookie()
     }
 
     // A client to know about WebView navigations
@@ -202,11 +223,6 @@ open class SignInOutActivity : AppCompatActivity() {
 
         setPushToken()
 
-        // firebase에 사용자 정보 저장(uid, token, userName, profileImg)
-        user = database.getReference("users") // DB 테이블 연결
-        val userInfo = UserInfo(id, accessToken, displayName, avatar, pushToken)
-        user.child(id).setValue(userInfo) // 랜덤한 문자열을 key로 할당 후, 목록 생성
-
         // SharedPreference에 사용자 정보 저장
         setPref()
 
@@ -226,10 +242,18 @@ open class SignInOutActivity : AppCompatActivity() {
 
     private fun setPushToken(){
         FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
-            if (!task.isSuccessful)
+            if (!task.isSuccessful) {
+                Log.d("fcm-pushToken", "fail")
                 return@OnCompleteListener
+            }
+            Log.d("fcm-pushToken", "success: ${task.result.toString()}")
             pushToken = task.result.toString()
             SharedPreferenceController.setPushToken(applicationContext, pushToken)
+
+            // firebase에 사용자 정보 저장(uid, token, userName, profileImg)
+            user = database.getReference("users") // DB 테이블 연결
+            val userInfo = UserInfo(id, accessToken, displayName, avatar, pushToken)
+            user.child(id).setValue(userInfo) // 랜덤한 문자열을 key로 할당 후, 목록 생성
         })
     }
 
