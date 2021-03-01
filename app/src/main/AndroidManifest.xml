@@ -12,11 +12,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.COLLABOARD_Android">
-        <activity android:name=".setting.SettingActivity"
+        <activity android:name=".issue.ui.IssueActivity" />
+        <activity
+            android:name=".setting.SettingActivity"
             android:theme="@style/Theme.boardTheme" />
         <activity
             android:name=".login.ui.SignInOutActivity"
-            android:theme="@style/Theme.boardTheme" >
+            android:theme="@style/Theme.boardTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
