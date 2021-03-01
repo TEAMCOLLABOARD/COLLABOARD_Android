@@ -86,7 +86,7 @@ class BoardListActivity : AppCompatActivity() {
         nameString.append(USER_NAME)
         binding.tvName.text = nameString
 
-        //Todo: 사용자 프로필 이미지 설정
+        // 사용자 프로필 이미지 설정
         Glide.with(this)
             .load(PROFILE_IMG)
             .into(binding.imgProfile)
