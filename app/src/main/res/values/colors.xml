@@ -26,4 +26,12 @@
     <color name="gray_board_list">#FAFAFA</color>
     <color name="gray_member_count">#A6A6A6</color>
     <color name="gray_hint">#8CFAFAFA</color>
+
+    <!-- InboxActivity color palette -->
+    <color name="gray_inbox_count">#7F7F7F</color>
+    <color name="gray_count_bg">#F2F2F2</color>
+    <color name="gray_spinner">#D0CECE</color>
+    <color name="gray_repo">#909090</color>
+    <color name="gray_type_label">#A6A6A6</color>
+    <color name="gray_divider_inbox">#DDDDDD</color>
 </resources>

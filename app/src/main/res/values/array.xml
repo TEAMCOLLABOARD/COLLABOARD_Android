@@ -8,4 +8,9 @@
         <item>Chore</item>
         <item>Style</item>
     </string-array>
+
+    <string-array name="inbox_array">
+        <item>Unread</item>
+        <item>All</item>
+    </string-array>
 </resources>
