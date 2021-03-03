@@ -19,6 +19,7 @@ import com.example.collaboard_android.util.ItemClickListener
 import com.example.collaboard_android.util.SharedPreferenceController
 import com.google.firebase.database.*
 import com.example.collaboard_android.R
+import com.example.collaboard_android.inbox.InboxActivity
 import java.lang.StringBuilder
 import java.util.*
 import kotlin.collections.ArrayList
@@ -54,6 +55,8 @@ class BoardListActivity : AppCompatActivity() {
         initUserProfile()
 
         goToSettingActivity()
+
+        goToInboxActivity()
 
         setClickListenerOnAddBtn()
 
@@ -97,6 +100,13 @@ class BoardListActivity : AppCompatActivity() {
             val intent = Intent(this, SettingActivity::class.java)
             startActivity(intent)
             overridePendingTransition(R.anim.horizontal_left_in, R.anim.horizontal_right_out)
+        }
+    }
+
+    private fun goToInboxActivity() {
+        binding.imgbtnNotification.setOnClickListener {
+            val intent = Intent(this, InboxActivity::class.java)
+            startActivity(intent)
         }
     }
 
