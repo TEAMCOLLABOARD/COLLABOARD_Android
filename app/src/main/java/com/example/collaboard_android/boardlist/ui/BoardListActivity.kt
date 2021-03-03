@@ -42,6 +42,8 @@ class BoardListActivity : AppCompatActivity() {
     private lateinit var UID: String
     private lateinit var PROFILE_IMG: String
 
+    private var height = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityBoardListBinding.inflate(layoutInflater)
@@ -71,6 +73,11 @@ class BoardListActivity : AppCompatActivity() {
         initRecyclerView()
     }
 
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        height = binding.constraintlayoutBottom.height
+    }
+
     private fun initValue() {
         binding.etParticipationCode.text.clear()
     }
@@ -98,6 +105,7 @@ class BoardListActivity : AppCompatActivity() {
     private fun goToSettingActivity() {
         binding.imgProfile.setOnClickListener {
             val intent = Intent(this, SettingActivity::class.java)
+            intent.putExtra("height", height)
             startActivity(intent)
             overridePendingTransition(R.anim.horizontal_left_in, R.anim.horizontal_right_out)
         }

@@ -1,6 +1,7 @@
 package com.example.collaboard_android.util
 
 import android.annotation.SuppressLint
+import android.view.View
 import java.util.*
 
 /* 확장함수 */
@@ -56,5 +57,14 @@ fun getDeadlineString(deadline: Int) : String {
             val result = (-1) * deadline
             "D+$result"
         }
+    }
+}
+
+/* view height 설정 및 변경 함수 */
+fun View.setHeight(value: Int) {
+    val lp = layoutParams
+    lp?.let {
+        lp.height = value
+        layoutParams = lp
     }
 }
