@@ -1,7 +1,7 @@
 package com.example.collaboard_android.network
 
 import com.example.collaboard_android.boardlist.data.ResponseRepoData
-import com.example.collaboard_android.inbox.ResponseNotificationData
+import com.example.collaboard_android.inbox.data.ResponseNotificationData
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Header

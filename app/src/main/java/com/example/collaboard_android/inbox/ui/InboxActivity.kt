@@ -1,4 +1,4 @@
-package com.example.collaboard_android.inbox
+package com.example.collaboard_android.inbox.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -9,6 +9,9 @@ import android.widget.ArrayAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.collaboard_android.R
 import com.example.collaboard_android.databinding.ActivityInboxBinding
+import com.example.collaboard_android.inbox.data.ResponseNotificationData
+import com.example.collaboard_android.inbox.adapter.InboxAdapter
+import com.example.collaboard_android.inbox.adapter.InboxData
 import com.example.collaboard_android.network.RequestToServer
 import com.example.collaboard_android.util.SharedPreferenceController
 import okhttp3.ResponseBody

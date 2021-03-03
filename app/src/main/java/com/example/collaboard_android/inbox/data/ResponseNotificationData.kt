@@ -1,11 +1,11 @@
-package com.example.collaboard_android.inbox
+package com.example.collaboard_android.inbox.data
 
 class ResponseNotificationData : ArrayList<ResponseNotificationData.ResponseNotificationDataItem>(){
     data class ResponseNotificationDataItem(
-        val reason: String,
-        val repository: Repository,
-        val subject: Subject,
-        val unread: Boolean
+            val reason: String,
+            val repository: Repository,
+            val subject: Subject,
+            val unread: Boolean
     )
 
     data class Repository(

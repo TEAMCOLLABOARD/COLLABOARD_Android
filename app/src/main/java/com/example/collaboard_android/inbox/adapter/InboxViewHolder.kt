@@ -1,9 +1,10 @@
-package com.example.collaboard_android.inbox
+package com.example.collaboard_android.inbox.adapter
 
 import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.collaboard_android.R
+import com.example.collaboard_android.inbox.adapter.InboxData
 
 class InboxViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 

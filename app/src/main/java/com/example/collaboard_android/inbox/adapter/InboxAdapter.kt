@@ -1,4 +1,4 @@
-package com.example.collaboard_android.inbox
+package com.example.collaboard_android.inbox.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.collaboard_android.R
+import com.example.collaboard_android.inbox.adapter.InboxData
+import com.example.collaboard_android.inbox.adapter.InboxViewHolder
 
 class InboxAdapter(private val context: Context) : RecyclerView.Adapter<InboxViewHolder>() {
 

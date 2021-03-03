@@ -19,7 +19,7 @@ import com.example.collaboard_android.util.ItemClickListener
 import com.example.collaboard_android.util.SharedPreferenceController
 import com.google.firebase.database.*
 import com.example.collaboard_android.R
-import com.example.collaboard_android.inbox.InboxActivity
+import com.example.collaboard_android.inbox.ui.InboxActivity
 import java.lang.StringBuilder
 import java.util.*
 import kotlin.collections.ArrayList
