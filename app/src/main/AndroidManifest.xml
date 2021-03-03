@@ -12,6 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.COLLABOARD_Android">
+        <activity android:name=".inbox.InboxActivity"
+            android:theme="@style/Theme.InboxTheme" />
         <activity android:name=".issue.ui.IssueActivity" />
         <activity
             android:name=".setting.SettingActivity"

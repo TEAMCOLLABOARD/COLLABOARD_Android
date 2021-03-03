@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white">
+
+    <TextView
+        android:id="@+id/tv_repo_name_inbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="44dp"
+        android:layout_marginTop="22dp"
+        android:fontFamily="@font/notosanskrregular"
+        android:includeFontPadding="false"
+        android:text="Team-MoMo/MoMo_Android"
+        android:textColor="@color/gray_repo"
+        android:textSize="12dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_title_inbox"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="32dp"
+        android:ellipsize="end"
+        android:fontFamily="@font/notosanskrregular"
+        android:includeFontPadding="false"
+        android:lineSpacingExtra="-2dp"
+        android:maxLines="2"
+        android:text="[fix] activity_setting.xml 파일의 switch 색상 변경 파일의 switch 색상 변경 feature/#298"
+        android:textColor="@color/black_content"
+        android:textSize="14dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/tv_repo_name_inbox"
+        app:layout_constraintTop_toBottomOf="@+id/tv_repo_name_inbox" />
+
+    <TextView
+        android:id="@+id/tv_label_reason"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/background_label_task"
+        android:fontFamily="@font/notosanskrmedium"
+        android:includeFontPadding="false"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="2dp"
+        android:paddingBottom="6dp"
+        android:text="Comment"
+        android:textColor="@color/white"
+        android:textSize="11dp"
+        app:layout_constraintStart_toStartOf="@+id/tv_title_inbox"
+        app:layout_constraintTop_toBottomOf="@+id/tv_title_inbox" />
+
+    <TextView
+        android:id="@+id/tv_label_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="7dp"
+        android:background="@drawable/background_type_label"
+        android:fontFamily="@font/notosanskrmedium"
+        android:includeFontPadding="false"
+        android:paddingHorizontal="10dp"
+        android:paddingBottom="6dp"
+        android:paddingVertical="2dp"
+        android:text="Pull request"
+        android:textColor="@color/gray_type_label"
+        android:textSize="11dp"
+        app:layout_constraintStart_toEndOf="@+id/tv_label_reason"
+        app:layout_constraintTop_toTopOf="@+id/tv_label_reason" />
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="@color/gray_divider_inbox"
+        android:layout_marginTop="22dp"
+        app:layout_constraintEnd_toEndOf="@+id/tv_title_inbox"
+        app:layout_constraintStart_toStartOf="@+id/view_unread_notify"
+        app:layout_constraintTop_toBottomOf="@id/tv_label_reason" />
+
+    <View
+        android:id="@+id/view_unread_notify"
+        android:layout_width="5dp"
+        android:layout_height="5dp"
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/background_label_task"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_repo_name_inbox"
+        app:layout_constraintEnd_toStartOf="@+id/tv_repo_name_inbox"
+        app:layout_constraintTop_toTopOf="@+id/tv_repo_name_inbox" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
