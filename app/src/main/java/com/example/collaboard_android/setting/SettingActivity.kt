@@ -6,6 +6,7 @@ import com.bumptech.glide.Glide
 import com.example.collaboard_android.R
 import com.example.collaboard_android.databinding.ActivitySettingBinding
 import com.example.collaboard_android.util.SharedPreferenceController
+import com.example.collaboard_android.util.setHeight
 
 class SettingActivity : AppCompatActivity() {
 
@@ -22,6 +23,8 @@ class SettingActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
+        setConstraintHeight()
+
         setPrefValue()
 
         initProfile()
@@ -31,6 +34,11 @@ class SettingActivity : AppCompatActivity() {
         initWithdrawalButton()
 
         initBackButton()
+    }
+
+    private fun setConstraintHeight() {
+        val height = intent.getIntExtra("height", 0)
+        binding.constraintLayout4.setHeight(height)
     }
 
     private fun setPrefValue() {

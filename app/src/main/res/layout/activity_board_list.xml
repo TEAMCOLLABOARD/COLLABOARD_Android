@@ -17,6 +17,18 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageButton
+            android:id="@+id/imgbtn_notification"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="20dp"
+            android:background="@drawable/btn_notifications_white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_percent="0.058" />
+
+        <ImageButton
             android:id="@+id/imgbtn_add"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -109,18 +121,20 @@
         android:background="@drawable/background_board_list"
         android:paddingTop="28dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/et_Participation_code">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerview_board_list"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:paddingBottom="28dp"
             android:clipToPadding="false"
             android:overScrollMode="never"
-            tools:listitem="@layout/item_board_list"
+            android:paddingBottom="28dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:listitem="@layout/item_board_list" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
