@@ -5,5 +5,6 @@ data class TaskData(
         val deadline: String,
         val content: String,
         val profileImg: String,
-        val userName: String
+        val userName: String,
+        val createdAt: String
 )

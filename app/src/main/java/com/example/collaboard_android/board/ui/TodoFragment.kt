@@ -15,10 +15,7 @@ import com.example.collaboard_android.board.adapter.TaskListener
 import com.example.collaboard_android.board.ui.BoardActivity.Companion.frag_board_code
 import com.example.collaboard_android.R
 import com.example.collaboard_android.model.DeadlineModel
-import com.example.collaboard_android.util.SharedPreferenceController
-import com.example.collaboard_android.util.calDeadline
-import com.example.collaboard_android.util.getDeadlineString
-import com.example.collaboard_android.util.getLabelString
+import com.example.collaboard_android.util.*
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.fragment_todo.*
 import java.lang.StringBuilder
@@ -80,18 +77,19 @@ class TodoFragment : Fragment(), TaskListener {
                 val labelString = getLabelString(label)
                 val deadline = calDeadline(pickDate)
                 val deadlineString = getDeadlineString(deadline)
+                val formedDate = getFormedDate(pickDate)
 
-                // 데드라인 등록 함수
                 boardContext.sendPushNotification(-1, -2, 0, true)
+                // 데드라인 등록 함수
                 putDeadlineInDatabase(label, pickDate, description)
-                addRecyclerItemToAdapter(labelString, deadlineString, description)
+                addRecyclerItemToAdapter(labelString, deadlineString, description, formedDate)
             }
             addTaskDialog.show(childFragmentManager, "add_task_dialog")
         }
     }
 
-    private fun addRecyclerItemToAdapter(label: String, deadline: String, description: String) {
-        val taskData = TaskData(label, deadline, description, PROFILE_IMG, USER_NAME)
+    private fun addRecyclerItemToAdapter(label: String, deadline: String, description: String, createdAt: String) {
+        val taskData = TaskData(label, deadline, description, PROFILE_IMG, USER_NAME, createdAt)
 
         taskAdapter.addItem(taskData)
         taskAdapter.notifyDataSetChanged()
@@ -137,10 +135,11 @@ class TodoFragment : Fragment(), TaskListener {
                         val hashMap: HashMap<String, String>? = map[i] as HashMap<String, String>?
                         val taskData = TaskData(
                             hashMap?.get("label").toString(),
-                            hashMap?.get("deadline").toString(),
+                            getDeadlineString(calDeadline(getYMDString(hashMap?.get("createdAt").toString()))),
                             hashMap?.get("content").toString(),
                             hashMap?.get("profileImg").toString(),
-                            hashMap?.get("userName").toString()
+                            hashMap?.get("userName").toString(),
+                            hashMap?.get("createdAt").toString()
                         )
                         list.add(taskData)
                     }
