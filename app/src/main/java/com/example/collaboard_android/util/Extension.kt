@@ -19,6 +19,16 @@ fun getLabelString(label: Int) : String {
     }
 }
 
+/* yyyy-mm-dd 형식의 날짜를 year, month, day 형식으로 반환해주는 함수 */
+fun getYMDString(date: String) : IntArray {
+    val splitString = date.split("-")
+    val year = splitString[0].toInt()
+    val month = splitString[1].toInt()
+    val day = splitString[2].toInt()
+
+    return intArrayOf(year, month, day)
+}
+
 /* d-day 계산 함수 */
 @SuppressLint("SimpleDateFormat")
 fun calDeadline(pickDate: IntArray) : Int {
