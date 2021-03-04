@@ -27,8 +27,10 @@ class CreateBoardActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCreateBoardBinding
 
     private var selectRepo = ""
+    private var selectRepoFullName = ""
 
     private lateinit var repoList: ArrayList<String>
+    private lateinit var repoFullNameList: ArrayList<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,6 +56,7 @@ class CreateBoardActivity : AppCompatActivity() {
     private fun initCompanionValue() {
         dialog_board_name = ""
         dialog_repo_name = ""
+        dialog_repo_full_name = ""
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -109,6 +112,7 @@ class CreateBoardActivity : AppCompatActivity() {
 
     private fun getRepoList() {
         repoList = ArrayList()
+        repoFullNameList = ArrayList()
 
         RequestToServer.service.getRepo(
                 Authorization = "Bearer ${SharedPreferenceController.getAccessToken(this)}"
@@ -122,6 +126,7 @@ class CreateBoardActivity : AppCompatActivity() {
 
                             for (i in 0 until it.size) {
                                 repoList.add(it[i].name)
+                                repoFullNameList.add(it[i].full_name)
                             }
                             initRepoSpinner()
 
@@ -150,6 +155,7 @@ class CreateBoardActivity : AppCompatActivity() {
         binding.spinnerRepo.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 selectRepo = repoList[position]
+                selectRepoFullName = repoFullNameList[position]
             }
             override fun onNothingSelected(p0: AdapterView<*>?) {}
         }
@@ -159,6 +165,7 @@ class CreateBoardActivity : AppCompatActivity() {
         binding.btnCreate.setOnClickListener {
             dialog_board_name = binding.etBoardName.text.toString()
             dialog_repo_name = selectRepo
+            dialog_repo_full_name = selectRepoFullName
 
             val partCodeDialog = ShowPartCodeDialogFragment()
             partCodeDialog.show(supportFragmentManager, "show_part_code_dialog")
@@ -181,5 +188,6 @@ class CreateBoardActivity : AppCompatActivity() {
 
         var dialog_board_name = ""
         var dialog_repo_name = ""
+        var dialog_repo_full_name = ""
     }
 }

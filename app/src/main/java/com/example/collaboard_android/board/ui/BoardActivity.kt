@@ -11,6 +11,7 @@ import com.example.collaboard_android.board.adapter.UserInfo
 import com.example.collaboard_android.board.adapter.ViewPagerAdapter
 import com.example.collaboard_android.calendar.ui.CalendarActivity
 import com.example.collaboard_android.databinding.ActivityBoardBinding
+import com.example.collaboard_android.issue.ui.IssueActivity
 import com.example.collaboard_android.model.NotificationModel
 import com.example.collaboard_android.util.SharedPreferenceController
 import com.google.firebase.database.*
@@ -27,6 +28,7 @@ class BoardActivity : AppCompatActivity() {
 
     private lateinit var BOARD_NAME: String
     private lateinit var BOARD_CODE: String
+    private lateinit var REPO_NAME: String
 
     private lateinit var TOKEN: String
     private lateinit var UID: String
@@ -98,6 +100,7 @@ class BoardActivity : AppCompatActivity() {
             else -> {
                 BOARD_NAME = "error"
                 BOARD_CODE = "error"
+                REPO_NAME = "error"
             }
         }
         initBoardName()
@@ -106,6 +109,7 @@ class BoardActivity : AppCompatActivity() {
     private fun setBoardInfo() {
         BOARD_NAME = intent.getStringExtra("boardName").toString()
         BOARD_CODE = intent.getStringExtra("boardCode").toString()
+        REPO_NAME = intent.getStringExtra("repoName").toString()
         frag_board_name = BOARD_NAME
         frag_board_code = BOARD_CODE
     }
@@ -188,7 +192,11 @@ class BoardActivity : AppCompatActivity() {
 
     private fun initIssueButton() {
         binding.imgbtnIssue.setOnClickListener {
-            // Todo: Issue 뷰와 연결하기
+            val splitString = REPO_NAME.split("/")
+            val intent = Intent(this, IssueActivity::class.java)
+            intent.putExtra("owner", splitString[0])
+            intent.putExtra("repo", splitString[1])
+            startActivity(intent)
         }
     }
 
