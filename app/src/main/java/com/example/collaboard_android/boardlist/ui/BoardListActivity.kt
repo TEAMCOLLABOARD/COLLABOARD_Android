@@ -148,7 +148,8 @@ class BoardListActivity : AppCompatActivity() {
                                             override fun onDataChange(snapshot: DataSnapshot) {
                                                 val boardName = snapshot.child("boardName").value.toString()
                                                 val memberCount = snapshot.child("memberCount").value.toString()
-                                                boardList.add(BoardListData(boardName, getMemberCountStr(memberCount)))
+                                                val repoName = snapshot.child("repo").value.toString()
+                                                boardList.add(BoardListData(boardName, getMemberCountStr(memberCount), repoName))
                                                 boardListAdapter.data = boardList
                                                 boardListAdapter.notifyDataSetChanged()
                                             }
@@ -176,6 +177,7 @@ class BoardListActivity : AppCompatActivity() {
                 val intent = Intent(this@BoardListActivity, BoardActivity::class.java)
                 intent.putExtra("boardName", boardList[position].boardName)
                 intent.putExtra("boardCode", partCodeList[position])
+                intent.putExtra("repoName", boardList[position].repo)
                 intent.putExtra("intentFrom", "BoardListActivity")
                 startActivity(intent)
             }
@@ -235,6 +237,7 @@ class BoardListActivity : AppCompatActivity() {
 
     private fun goToBoardActivity() {
         var boardName = ""
+        var repoName = ""
         val boardCode = binding.etParticipationCode.text.toString().trim().toUpperCase(Locale.ROOT)
 
         // info에서 해당 code에 해당하는 보드 이름 가져오기
@@ -242,6 +245,7 @@ class BoardListActivity : AppCompatActivity() {
             .addListenerForSingleValueEvent(object: ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     boardName = snapshot.child("boardName").value.toString()
+                    repoName = snapshot.child("repo").value.toString()
 
                     // 보드 리스트에 해당 보드 추가
                     databaseReference.child("users").child(UID)
@@ -253,6 +257,7 @@ class BoardListActivity : AppCompatActivity() {
                             Intent.FLAG_ACTIVITY_CLEAR_TOP
                     intent.putExtra("boardName", boardName)
                     intent.putExtra("boardCode", boardCode)
+                    intent.putExtra("repoName", repoName)
                     intent.putExtra("intentFrom", "ParticipationCode")
                     startActivity(intent)
                 }

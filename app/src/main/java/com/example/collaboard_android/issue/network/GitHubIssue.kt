@@ -15,13 +15,10 @@ data class IssueDTO(
 // API interface
 // HTTP API를 interface 형태로 생성
 interface GitHubService {
-    @Headers(
-        "Authorization: token 1d6eb534859d0829dd29345eb3e5b5043fac7bc2",
-        "Content-Type: application/json"
-    )
+    @Headers("Content-Type: application/json")
     @POST("/repos/{owner}/{repo}/issues")
-
     fun createIssueCall(
+        @Header("Authorization") Authorization: String?,
         @Path("owner") owner: String,
         @Path("repo") repo: String,
         @Body requestBody: RequestBody
