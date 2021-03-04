@@ -46,7 +46,11 @@ class CalendarActivity : AppCompatActivity() {
         calList.add(CalendarDay.from(2021, 3, 21))
         calList.add(CalendarDay.from(2021, 3, 25))
         for (calDay in calList) {
-
+            binding.mcvCalendar.addDecorator(
+                DotDecorator(
+                    calDay
+                )
+            )
         }
 
         // 날짜 클릭
