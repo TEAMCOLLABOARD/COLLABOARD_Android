@@ -85,4 +85,7 @@ dependencies {
 
     // Gson (To convert raw JSON to pretty JSON)
     implementation 'com.google.code.gson:gson:2.8.6'
+
+    // material calendar
+    implementation "com.github.prolificinteractive:material-calendarview:2.0.0"
 }
