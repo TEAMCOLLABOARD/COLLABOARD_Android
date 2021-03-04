@@ -2,14 +2,15 @@ package com.example.collaboard_android.calendar.ui
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.applikeysolutions.cosmocalendar.selection.SingleSelectionManager
 import com.example.collaboard_android.calendar.adapter.DeadlineAdapter
 import com.example.collaboard_android.calendar.adapter.DeadlineDTO
 import com.example.collaboard_android.databinding.ActivityCalendarBinding
 import com.google.firebase.database.*
-import java.util.*
+import com.prolificinteractive.materialcalendarview.CalendarDay
+import com.sothree.slidinguppanel.SlidingUpPanelLayout
 
 class CalendarActivity : AppCompatActivity() {
 
@@ -31,19 +32,29 @@ class CalendarActivity : AppCompatActivity() {
         setContentView(view) // binding 변수의 root 뷰를 가져와서 setContentView 메소드의 인자로 전달
 
         val database: FirebaseDatabase = FirebaseDatabase.getInstance() // 파이어베이스 데이터베이스 연동
-        deadline = database.getReference("deadline") // DB 테이블 연결
 
-        binding.cvCalendar.isShowDaysOfWeekTitle = false
+        // Todo: boardActivity에서 intent로 uid 받아와 query 수정 -> "users/uid/deadline/currentBoard"
+        deadline = database.getReference("users/52696359/deadline/Q7Z9L6") // DB 테이블 연결
 
-        // 날짜를 선택한 경우
-        binding.cvCalendar.selectionManager = SingleSelectionManager {
+        binding.rvCalendarDeadline.adapter = DeadlineAdapter(this, deadlineList)
+        binding.rvCalendarDeadline.layoutManager = LinearLayoutManager(this)
+        binding.rvCalendarDeadline.setHasFixedSize(true) // recyclerview 크기 고정
 
-            val days: List<Calendar> = binding.cvCalendar.selectedDates
-            val calendar: Calendar = days[0]
-            day = calendar.get(Calendar.DAY_OF_MONTH)
-            month = calendar.get(Calendar.MONTH)
-            year = calendar.get(Calendar.YEAR)
-            val date = year.toString() + "-" + (month + 1).toString() + "-" + day.toString()
+        val calList = ArrayList<CalendarDay>()
+        calList.add(CalendarDay.from(2021, 3, 3))
+        calList.add(CalendarDay.from(2021, 3, 10))
+        calList.add(CalendarDay.from(2021, 3, 21))
+        calList.add(CalendarDay.from(2021, 3, 25))
+        for (calDay in calList) {
+
+        }
+
+        // 날짜 클릭
+        binding.mcvCalendar.setOnDateChangedListener { widget, date, selected ->
+            year = date.year
+            month = date.month
+            day = date.day
+            val selectedDate = "$year-$month-$day"
 
             deadline.addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -51,8 +62,9 @@ class CalendarActivity : AppCompatActivity() {
                     // ArrayList 비워줌
                     deadlineList.clear()
 
+                    // 선택한 날짜와 동일한 date 값을 가진 데이터 불러옴
                     for (postSnapshot in dataSnapshot.children) {
-                        if (postSnapshot.child("date").value.toString() == date) {
+                        if (postSnapshot.child("date").value.toString() == selectedDate) {
                             val item = postSnapshot.getValue(DeadlineDTO::class.java)
                             if (item != null) {
                                 deadlineList.add(item)
@@ -60,16 +72,26 @@ class CalendarActivity : AppCompatActivity() {
                         }
                     }
                     binding.rvCalendarDeadline.adapter?.notifyDataSetChanged()
-                    binding.rvCalendarDeadline.scheduleLayoutAnimation() // 애니메이션
+
+                    binding.splDeadline.addPanelSlideListener(object :
+                        SlidingUpPanelLayout.PanelSlideListener {
+
+                        override fun onPanelSlide(panel: View?, slideOffset: Float) {
+                            binding.rvCalendarDeadline.scheduleLayoutAnimation() // item 애니메이션
+                        }
+
+                        override fun onPanelStateChanged(
+                            panel: View?,
+                            previousState: SlidingUpPanelLayout.PanelState?,
+                            newState: SlidingUpPanelLayout.PanelState?
+                        ) {
+                        }
+                    })
                 }
 
                 override fun onCancelled(error: DatabaseError) {
                 }
             })
-
-            binding.rvCalendarDeadline.adapter = DeadlineAdapter(this, deadlineList)
-            binding.rvCalendarDeadline.layoutManager = LinearLayoutManager(this)
-            binding.rvCalendarDeadline.setHasFixedSize(true) // recyclerview 크기 고정
         }
     }
 }
