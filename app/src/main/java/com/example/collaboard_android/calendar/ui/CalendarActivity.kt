@@ -11,6 +11,8 @@ import com.example.collaboard_android.databinding.ActivityCalendarBinding
 import com.google.firebase.database.*
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
+import java.util.*
+import kotlin.collections.ArrayList
 
 class CalendarActivity : AppCompatActivity() {
 
@@ -19,9 +21,9 @@ class CalendarActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCalendarBinding
     private lateinit var deadline: DatabaseReference
 
-    private var day: Int = 0
-    private var month: Int = 0
-    private var year: Int = 0
+    private var day: Int = Calendar.DATE
+    private var month: Int = Calendar.MONTH+1
+    private var year: Int = Calendar.YEAR
 
     @SuppressLint("SimpleDateFormat")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,6 +32,9 @@ class CalendarActivity : AppCompatActivity() {
             ActivityCalendarBinding.inflate(layoutInflater) // inflate 메소드를 호출하여 Binding Class 변수 초기화
         val view = binding.root
         setContentView(view) // binding 변수의 root 뷰를 가져와서 setContentView 메소드의 인자로 전달
+
+        // 현재 달의 말일 계
+        getLastDay(year, month, day)
 
         val database: FirebaseDatabase = FirebaseDatabase.getInstance() // 파이어베이스 데이터베이스 연동
 
@@ -99,5 +104,13 @@ class CalendarActivity : AppCompatActivity() {
                 }
             })
         }
+    }
+
+    // 선택한 달의 말일 계산
+    private fun getLastDay(year: Int, month: Int, day: Int): Int {
+        val lastDay: Calendar = Calendar.getInstance()
+        lastDay.set(year, (month - 1), day)
+
+        return lastDay.getActualMaximum(Calendar.DAY_OF_MONTH)
     }
 }
