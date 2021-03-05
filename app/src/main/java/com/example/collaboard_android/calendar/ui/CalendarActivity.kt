@@ -33,8 +33,10 @@ class CalendarActivity : AppCompatActivity() {
 
         val database: FirebaseDatabase = FirebaseDatabase.getInstance() // 파이어베이스 데이터베이스 연동
 
-        // Todo: boardActivity에서 intent로 uid 받아와 query 수정 -> "users/uid/deadline/currentBoard"
-        deadline = database.getReference("users/52696359/deadline/Q7Z9L6") // DB 테이블 연결
+        val currentBoard = intent.getStringExtra("boardCode").toString()
+        val uid = intent.getStringExtra("uid").toString()
+
+        deadline = database.getReference("users/$uid/deadline/$currentBoard") // DB 테이블 연결
 
         binding.rvCalendarDeadline.adapter = DeadlineAdapter(this, deadlineList)
         binding.rvCalendarDeadline.layoutManager = LinearLayoutManager(this)
