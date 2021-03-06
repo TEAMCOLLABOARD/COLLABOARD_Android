@@ -12,7 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.COLLABOARD_Android">
-        <activity android:name=".inbox.ui.InboxActivity"
+        <activity
+            android:name=".inbox.ui.InboxActivity"
             android:theme="@style/Theme.InboxTheme" />
         <activity android:name=".issue.ui.IssueActivity" />
         <activity
@@ -27,7 +28,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".calendar.ui.CalendarActivity" />
+        <activity
+            android:name=".calendar.ui.CalendarActivity"
+            android:theme="@style/Theme.InboxTheme" />
         <activity
             android:name=".boardlist.ui.CreateBoardActivity"
             android:theme="@style/Theme.boardTheme" />
