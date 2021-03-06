@@ -21,9 +21,17 @@ class CalendarActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCalendarBinding
     private lateinit var deadline: DatabaseReference
 
-    private var day: Int = Calendar.DATE
-    private var month: Int = Calendar.MONTH+1
-    private var year: Int = Calendar.YEAR
+    private var day: Int = Calendar.getInstance().get(Calendar.DATE)
+    private var month: Int = Calendar.getInstance().get(Calendar.MONTH)+1
+    private var year: Int = Calendar.getInstance().get(Calendar.YEAR)
+    private var lastDay: Int = 0
+
+    private var currentBoard = ""
+    private var uid = ""
+
+    val calList = ArrayList<CalendarDay>()
+
+    val database: FirebaseDatabase = FirebaseDatabase.getInstance() // 파이어베이스 데이터베이스 연동
 
     @SuppressLint("SimpleDateFormat")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,32 +41,19 @@ class CalendarActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view) // binding 변수의 root 뷰를 가져와서 setContentView 메소드의 인자로 전달
 
-        // 현재 달의 말일 계
-        getLastDay(year, month, day)
+        // 현재 달의 말일 계산
+        lastDay = getLastDay(year, month, day)
 
-        val database: FirebaseDatabase = FirebaseDatabase.getInstance() // 파이어베이스 데이터베이스 연동
+        currentBoard = intent.getStringExtra("boardCode").toString()
+        uid = intent.getStringExtra("uid").toString()
 
-        val currentBoard = intent.getStringExtra("boardCode").toString()
-        val uid = intent.getStringExtra("uid").toString()
+        getAllDeadline() // firebase에서 선택한 달의 모든 deadline 불러옴
 
         deadline = database.getReference("users/$uid/deadline/$currentBoard") // DB 테이블 연결
 
         binding.rvCalendarDeadline.adapter = DeadlineAdapter(this, deadlineList)
         binding.rvCalendarDeadline.layoutManager = LinearLayoutManager(this)
         binding.rvCalendarDeadline.setHasFixedSize(true) // recyclerview 크기 고정
-
-        val calList = ArrayList<CalendarDay>()
-        calList.add(CalendarDay.from(2021, 3, 3))
-        calList.add(CalendarDay.from(2021, 3, 10))
-        calList.add(CalendarDay.from(2021, 3, 21))
-        calList.add(CalendarDay.from(2021, 3, 25))
-        for (calDay in calList) {
-            binding.mcvCalendar.addDecorator(
-                DotDecorator(
-                    calDay
-                )
-            )
-        }
 
         // 날짜 클릭
         binding.mcvCalendar.setOnDateChangedListener { widget, date, selected ->
@@ -112,5 +107,32 @@ class CalendarActivity : AppCompatActivity() {
         lastDay.set(year, (month - 1), day)
 
         return lastDay.getActualMaximum(Calendar.DAY_OF_MONTH)
+    }
+
+    // firebase에서 선택한 달의 모든 deadline 호출
+    private fun getAllDeadline() {
+
+        deadline = database.getReference("users/$uid/deadline/$currentBoard")
+
+        deadline.orderByChild("date").addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+                // calList 비워줌
+                calList.clear()
+
+                for (postSnapshot in dataSnapshot.children) {
+                    for (i in 1..lastDay) {
+                        val strDate = "$year-$month-$i"
+                        if (postSnapshot.child("date").value.toString() == strDate) {
+                            calList.add(CalendarDay.from(year, month, i))
+                            break
+                        }
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+            }
+        })
     }
 }
