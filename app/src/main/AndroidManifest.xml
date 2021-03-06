@@ -15,7 +15,9 @@
         <activity
             android:name=".inbox.ui.InboxActivity"
             android:theme="@style/Theme.InboxTheme" />
-        <activity android:name=".issue.ui.IssueActivity" />
+        <activity
+            android:name=".issue.ui.IssueActivity"
+            android:theme="@style/Theme.boardTheme" />
         <activity
             android:name=".setting.SettingActivity"
             android:theme="@style/Theme.boardTheme" />

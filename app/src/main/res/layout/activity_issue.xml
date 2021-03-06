@@ -17,7 +17,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageButton
-            android:id="@+id/imgbtn_back"
+            android:id="@+id/imgbtn_back_issue"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginStart="20dp"
@@ -129,7 +129,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="60dp"
-            app:layout_constraintBottom_toTopOf="@+id/constraintlayout_assignees"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
@@ -150,45 +149,45 @@
             <EditText
                 android:id="@+id/et_description"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="130dp"
                 android:layout_marginHorizontal="3dp"
                 android:layout_marginTop="18dp"
                 android:layout_marginEnd="5dp"
                 android:autofillHints=""
-                android:background="@null"
+                android:paddingHorizontal="10dp"
+                android:background="@drawable/background_issue_edittext"
                 android:clickable="true"
                 android:focusable="true"
                 android:fontFamily="@font/notosanskrmedium"
                 android:includeFontPadding="false"
                 android:inputType="text"
-                android:lines="1"
                 android:singleLine="true"
                 android:textColor="@color/white"
                 android:textSize="16sp"
-                app:layout_constraintEnd_toStartOf="@+id/imgbtn_description_edit"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_description"
                 tools:ignore="LabelFor" />
 
-            <ImageButton
-                android:id="@+id/imgbtn_description_edit"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_marginBottom="7dp"
-                android:background="@drawable/btn_edit_white"
-                app:layout_constraintBottom_toBottomOf="@+id/view_description_underline"
-                app:layout_constraintDimensionRatio="1:1"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/et_description"
-                app:layout_constraintWidth_percent="0.065" />
+<!--            <ImageButton-->
+<!--                android:id="@+id/imgbtn_description_edit"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="0dp"-->
+<!--                android:layout_marginBottom="7dp"-->
+<!--                android:background="@drawable/btn_edit_white"-->
+<!--                app:layout_constraintBottom_toBottomOf="@+id/view_description_underline"-->
+<!--                app:layout_constraintDimensionRatio="1:1"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintTop_toTopOf="@+id/et_description"-->
+<!--                app:layout_constraintWidth_percent="0.065" />-->
 
-            <View
-                android:id="@+id/view_description_underline"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="8dp"
-                android:background="@color/gray_divider"
-                app:layout_constraintTop_toBottomOf="@+id/et_description" />
+<!--            <View-->
+<!--                android:id="@+id/view_description_underline"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="1dp"-->
+<!--                android:layout_marginTop="8dp"-->
+<!--                android:background="@color/gray_divider"-->
+<!--                app:layout_constraintTop_toBottomOf="@+id/et_description" />-->
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
