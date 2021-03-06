@@ -140,10 +140,22 @@ class CalendarActivity : AppCompatActivity() {
                         }
                     }
                 }
+                dotDecoration()
             }
 
             override fun onCancelled(error: DatabaseError) {
             }
         })
+    }
+
+    // 숫자 아래 점
+    private fun dotDecoration() {
+        for (calDay in calList) {
+            binding.mcvCalendar.addDecorator(
+                DotDecorator(
+                    calDay
+                )
+            )
+        }
     }
 }
