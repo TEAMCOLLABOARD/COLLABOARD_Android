@@ -49,6 +49,11 @@ class IssueActivity : AppCompatActivity() {
                     .show()
             }
         }
+
+        // 백버튼 클릭
+        binding.imgbtnBackIssue.setOnClickListener {
+            finish()
+        }
     }
 
     private fun creatIssue() {
@@ -84,7 +89,10 @@ class IssueActivity : AppCompatActivity() {
                     response.takeIf { it.isSuccessful }
                         ?.body()
                         ?.let {
-                            Log.d("issueActivity", "success: ${it.title}, message: ${response.message()}")
+                            Log.d(
+                                "issueActivity",
+                                "success: ${it.title}, message: ${response.message()}"
+                            )
                             val myIntent = Intent(this@IssueActivity, MainActivity::class.java)
                             startActivity(myIntent)
                         } ?: showError(response.errorBody())
