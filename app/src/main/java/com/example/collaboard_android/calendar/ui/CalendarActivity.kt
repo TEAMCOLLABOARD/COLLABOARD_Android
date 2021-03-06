@@ -22,7 +22,7 @@ class CalendarActivity : AppCompatActivity() {
     private lateinit var deadline: DatabaseReference
 
     private var day: Int = Calendar.getInstance().get(Calendar.DATE)
-    private var month: Int = Calendar.getInstance().get(Calendar.MONTH)+1
+    private var month: Int = Calendar.getInstance().get(Calendar.MONTH) + 1
     private var year: Int = Calendar.getInstance().get(Calendar.YEAR)
     private var lastDay: Int = 0
 
@@ -54,6 +54,9 @@ class CalendarActivity : AppCompatActivity() {
         binding.rvCalendarDeadline.adapter = DeadlineAdapter(this, deadlineList)
         binding.rvCalendarDeadline.layoutManager = LinearLayoutManager(this)
         binding.rvCalendarDeadline.setHasFixedSize(true) // recyclerview 크기 고정
+
+        // today 날짜 색상 적용
+        binding.mcvCalendar.addDecorator(TodayDecorator())
 
         // 날짜 클릭
         binding.mcvCalendar.setOnDateChangedListener { widget, date, selected ->
