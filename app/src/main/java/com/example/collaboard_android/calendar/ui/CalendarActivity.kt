@@ -99,6 +99,17 @@ class CalendarActivity : AppCompatActivity() {
                 }
             })
         }
+
+        // month change
+        binding.mcvCalendar.setOnMonthChangedListener { widget, date ->
+            // 현재 달의 말일 계산
+            year = date.year
+            month = date.month
+            day = date.day
+            lastDay = getLastDay(year, month, day)
+
+            getAllDeadline()
+        }
     }
 
     // 선택한 달의 말일 계산
