@@ -15,6 +15,6 @@ class DotDecorator(currentDay: CalendarDay) :
     }
 
     override fun decorate(view: DayViewFacade) {
-        view.addSpan(DotSpan(7F, Color.parseColor("#FF8C00"))) // 날자밑에 점 표시
+        view.addSpan(DotSpan(7F, Color.parseColor("#FFB400"))) // 날자밑에 점 표시
     }
 }
