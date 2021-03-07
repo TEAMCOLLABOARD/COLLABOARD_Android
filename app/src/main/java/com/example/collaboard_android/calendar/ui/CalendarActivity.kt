@@ -66,7 +66,7 @@ class CalendarActivity : AppCompatActivity() {
         }
 
         // today 날짜 색상 적용
-        binding.mcvCalendar.addDecorator(TodayDecorator())
+        binding.mcvCalendar.addDecorator(TodayDeco())
 
         // 날짜 클릭
         binding.mcvCalendar.setOnDateChangedListener { widget, date, selected ->
@@ -78,6 +78,12 @@ class CalendarActivity : AppCompatActivity() {
 
             deadline.addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+                    if (date == CalendarDay.today()) {
+                        binding.mcvCalendar.addDecorator(TodayWhiteDeco())
+                    } else {
+                        binding.mcvCalendar.addDecorator(TodayDeco())
+                    }
 
                     // ArrayList 비워줌
                     deadlineList.clear()
