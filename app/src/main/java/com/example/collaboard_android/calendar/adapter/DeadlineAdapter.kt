@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.collaboard_android.R
+import com.example.collaboard_android.util.getLabelString
 
 class DeadlineAdapter(
     private val context: Context,
@@ -16,10 +17,12 @@ class DeadlineAdapter(
 
     inner class Holder(itemView: View?) : RecyclerView.ViewHolder(itemView!!) {
         private val content = itemView?.findViewById<TextView>(R.id.tv_calendar_content)
+        private val label = itemView?.findViewById<TextView>(R.id.tv_label)
 
         fun bind(list: DeadlineDTO) {
             // TextView와 String 데이터 연결
             content?.text = list.content
+            label?.text = getLabelString(list.label)
         }
     }
 
