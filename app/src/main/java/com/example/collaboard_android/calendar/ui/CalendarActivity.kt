@@ -56,8 +56,6 @@ class CalendarActivity : AppCompatActivity() {
 
         deadline = database.getReference("users/$uid/deadline/$currentBoard") // DB 테이블 연결
 
-//        binding.linearlayoutDeadline.visibility = View.VISIBLE
-
         binding.rvCalendarDeadline.adapter = DeadlineAdapter(this, deadlineList)
         binding.rvCalendarDeadline.layoutManager = LinearLayoutManager(this)
         binding.rvCalendarDeadline.setHasFixedSize(true) // recyclerview 크기 고정
@@ -96,11 +94,9 @@ class CalendarActivity : AppCompatActivity() {
                     binding.rvCalendarDeadline.adapter?.notifyDataSetChanged()
 
                     if (deadlineList.isNotEmpty()) {
-//                        toDoVisible()
-//                        binding.linearlayoutDeadline.isClickable = true
-                        binding.linearlayoutDeadline.visibility = View.VISIBLE
-                        binding.splDeadline.isEnabled = true
+//                        binding.linearlayoutDeadline.visibility = View.VISIBLE
 
+                        binding.tvTodo.isClickable = true
 
                         binding.splDeadline.addPanelSlideListener(object :
                             SlidingUpPanelLayout.PanelSlideListener {
@@ -118,8 +114,7 @@ class CalendarActivity : AppCompatActivity() {
                         })
 
                     } else {
-//                        binding.linearlayoutDeadline.isClickable = false
-                        binding.linearlayoutDeadline.visibility = View.INVISIBLE
+                        binding.tvTodo.isClickable = false
                     }
                 }
 
@@ -186,10 +181,4 @@ class CalendarActivity : AppCompatActivity() {
             )
         }
     }
-
-    // SlidingUpPanel layout visible
-//    private fun toDoVisible() {
-//        println("toDoVisible 호출됨")
-//        binding.linearlayoutDeadline.visibility = View.VISIBLE
-//    }
 }
