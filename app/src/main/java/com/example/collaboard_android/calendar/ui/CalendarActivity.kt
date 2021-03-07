@@ -56,15 +56,23 @@ class CalendarActivity : AppCompatActivity() {
 
         deadline = database.getReference("users/$uid/deadline/$currentBoard") // DB 테이블 연결
 
+//        binding.linearlayoutDeadline.visibility = View.VISIBLE
+
         binding.rvCalendarDeadline.adapter = DeadlineAdapter(this, deadlineList)
         binding.rvCalendarDeadline.layoutManager = LinearLayoutManager(this)
         binding.rvCalendarDeadline.setHasFixedSize(true) // recyclerview 크기 고정
+
+        // slindingPanel 바깥쪽을 클릭한 경우 panel 내려감
+        binding.splDeadline.setFadeOnClickListener {
+            binding.splDeadline.panelState = SlidingUpPanelLayout.PanelState.COLLAPSED
+        }
 
         // today 날짜 색상 적용
         binding.mcvCalendar.addDecorator(TodayDecorator())
 
         // 날짜 클릭
         binding.mcvCalendar.setOnDateChangedListener { widget, date, selected ->
+
             year = date.year
             month = date.month
             day = date.day
@@ -87,20 +95,32 @@ class CalendarActivity : AppCompatActivity() {
                     }
                     binding.rvCalendarDeadline.adapter?.notifyDataSetChanged()
 
-                    binding.splDeadline.addPanelSlideListener(object :
-                        SlidingUpPanelLayout.PanelSlideListener {
+                    if (deadlineList.isNotEmpty()) {
+//                        toDoVisible()
+//                        binding.linearlayoutDeadline.isClickable = true
+                        binding.linearlayoutDeadline.visibility = View.VISIBLE
+                        binding.splDeadline.isEnabled = true
 
-                        override fun onPanelSlide(panel: View?, slideOffset: Float) {
-                            binding.rvCalendarDeadline.scheduleLayoutAnimation() // item 애니메이션
-                        }
 
-                        override fun onPanelStateChanged(
-                            panel: View?,
-                            previousState: SlidingUpPanelLayout.PanelState?,
-                            newState: SlidingUpPanelLayout.PanelState?
-                        ) {
-                        }
-                    })
+                        binding.splDeadline.addPanelSlideListener(object :
+                            SlidingUpPanelLayout.PanelSlideListener {
+
+                            override fun onPanelSlide(panel: View?, slideOffset: Float) {
+                                binding.rvCalendarDeadline.scheduleLayoutAnimation() // item 애니메이션
+                            }
+
+                            override fun onPanelStateChanged(
+                                panel: View?,
+                                previousState: SlidingUpPanelLayout.PanelState?,
+                                newState: SlidingUpPanelLayout.PanelState?
+                            ) {
+                            }
+                        })
+
+                    } else {
+//                        binding.linearlayoutDeadline.isClickable = false
+                        binding.linearlayoutDeadline.visibility = View.INVISIBLE
+                    }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
@@ -166,4 +186,10 @@ class CalendarActivity : AppCompatActivity() {
             )
         }
     }
+
+    // SlidingUpPanel layout visible
+//    private fun toDoVisible() {
+//        println("toDoVisible 호출됨")
+//        binding.linearlayoutDeadline.visibility = View.VISIBLE
+//    }
 }
