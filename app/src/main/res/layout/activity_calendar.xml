@@ -9,7 +9,7 @@
     android:orientation="vertical"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintTop_toTopOf="parent"
-    app:umanoDragView="@id/linearlayout_deadline"
+    app:umanoDragView="@id/tv_todo"
     app:umanoOverlay="true"
     app:umanoPanelHeight="80dp"
     app:umanoParallaxOffset="0dp"
@@ -81,35 +81,26 @@
     <LinearLayout
         android:id="@+id/linearlayout_deadline"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="300dp"
         android:background="@drawable/background_deadline_list"
         android:clickable="true"
         android:focusable="true"
-        android:gravity="bottom"
         android:orientation="vertical">
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/tv_todo"
             android:layout_width="match_parent"
-            android:layout_height="80dp"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/tv_todo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="30dp"
-                android:layout_marginTop="20dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:fontFamily="@font/notosanskrmedium"
-                android:includeFontPadding="false"
-                android:lineSpacingExtra="-1dp"
-                android:text="Todo"
-                android:textColor="@color/white"
-                android:textSize="28sp"
-                android:visibility="visible" />
-
-        </LinearLayout>
+            android:layout_height="50dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="20dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:fontFamily="@font/notosanskrmedium"
+            android:includeFontPadding="false"
+            android:lineSpacingExtra="-1dp"
+            android:text="Todo"
+            android:textColor="@color/white"
+            android:textSize="28sp" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_calendar_deadline"

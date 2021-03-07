@@ -60,11 +60,17 @@ class CalendarActivity : AppCompatActivity() {
         binding.rvCalendarDeadline.layoutManager = LinearLayoutManager(this)
         binding.rvCalendarDeadline.setHasFixedSize(true) // recyclerview 크기 고정
 
+        // slindingPanel 바깥쪽을 클릭한 경우 panel 내려감
+        binding.splDeadline.setFadeOnClickListener {
+            binding.splDeadline.panelState = SlidingUpPanelLayout.PanelState.COLLAPSED
+        }
+
         // today 날짜 색상 적용
         binding.mcvCalendar.addDecorator(TodayDecorator())
 
         // 날짜 클릭
         binding.mcvCalendar.setOnDateChangedListener { widget, date, selected ->
+
             year = date.year
             month = date.month
             day = date.day
@@ -87,20 +93,29 @@ class CalendarActivity : AppCompatActivity() {
                     }
                     binding.rvCalendarDeadline.adapter?.notifyDataSetChanged()
 
-                    binding.splDeadline.addPanelSlideListener(object :
-                        SlidingUpPanelLayout.PanelSlideListener {
+                    if (deadlineList.isNotEmpty()) {
+//                        binding.linearlayoutDeadline.visibility = View.VISIBLE
 
-                        override fun onPanelSlide(panel: View?, slideOffset: Float) {
-                            binding.rvCalendarDeadline.scheduleLayoutAnimation() // item 애니메이션
-                        }
+                        binding.tvTodo.isClickable = true
 
-                        override fun onPanelStateChanged(
-                            panel: View?,
-                            previousState: SlidingUpPanelLayout.PanelState?,
-                            newState: SlidingUpPanelLayout.PanelState?
-                        ) {
-                        }
-                    })
+                        binding.splDeadline.addPanelSlideListener(object :
+                            SlidingUpPanelLayout.PanelSlideListener {
+
+                            override fun onPanelSlide(panel: View?, slideOffset: Float) {
+                                binding.rvCalendarDeadline.scheduleLayoutAnimation() // item 애니메이션
+                            }
+
+                            override fun onPanelStateChanged(
+                                panel: View?,
+                                previousState: SlidingUpPanelLayout.PanelState?,
+                                newState: SlidingUpPanelLayout.PanelState?
+                            ) {
+                            }
+                        })
+
+                    } else {
+                        binding.tvTodo.isClickable = false
+                    }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
