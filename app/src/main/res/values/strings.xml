@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">COLLABOARD_Android</string>
+    <string name="app_name">Collaboard</string>
     <string name="login">Sign in with Github</string>
     <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
 </resources>
