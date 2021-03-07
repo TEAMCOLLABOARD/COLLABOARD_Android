@@ -3,12 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="80dp"
-    android:layout_marginStart="10dp"
-    android:layout_marginEnd="10dp"
+    android:layout_marginHorizontal="10dp"
     android:background="@drawable/background_deadline"
     android:orientation="horizontal"
-    android:paddingLeft="10sp"
-    android:paddingRight="10sp">
+    android:paddingHorizontal="10sp">
 
     <!--내용-->
     <TextView
