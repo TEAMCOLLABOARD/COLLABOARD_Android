@@ -41,6 +41,11 @@ class CalendarActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view) // binding 변수의 root 뷰를 가져와서 setContentView 메소드의 인자로 전달
 
+        // 백버튼 클릭
+        binding.imgbtnBackCalendar.setOnClickListener {
+            finish()
+        }
+
         // 현재 달의 말일 계산
         lastDay = getLastDay(year, month, day)
 
