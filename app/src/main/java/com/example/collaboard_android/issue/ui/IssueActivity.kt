@@ -68,15 +68,21 @@ class IssueActivity : AppCompatActivity() {
         getIssueLabels()
     }
 
+    // Retrofit 객체 생성
+    private fun retrofitBuilder(): Retrofit {
+        // Retrofit 객체 생성
+        return Retrofit.Builder()
+            .baseUrl("https://api.github.com")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
     private fun getIssueLabels() {
 
         labelList = ArrayList()
 
         // Retrofit 객체 생성
-        val retrofit = Retrofit.Builder()
-            .baseUrl("https://api.github.com")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+        val retrofit = retrofitBuilder()
 
         // retrofit 객체 통해 인터페이스 생성
         val server: RequestIssueLabels = retrofit.create(RequestIssueLabels::class.java)
@@ -115,8 +121,9 @@ class IssueActivity : AppCompatActivity() {
 
     private fun labelsAdapter() {
 
-        binding.constraintlayoutLabelsSpinner.visibility = View.VISIBLE
         val labelsAdapter = ArrayAdapter(this, R.layout.item_label_spinner, labelList)
+
+        binding.constraintlayoutLabelsSpinner.visibility = View.VISIBLE
         binding.spinnerLabels.adapter = labelsAdapter
         binding.spinnerLabels.setSelection(0)
 
@@ -136,10 +143,7 @@ class IssueActivity : AppCompatActivity() {
 
     private fun creatIssue() {
         // Retrofit 객체 생성
-        val retrofit = Retrofit.Builder()
-            .baseUrl("https://api.github.com")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+        val retrofit = retrofitBuilder()
 
         // retrofit 객체 통해 인터페이스 생성
         val server: GitHubService = retrofit.create(GitHubService::class.java)
