@@ -88,6 +88,7 @@
         android:fontFamily="@font/notosanskrregular"
         android:gravity="center_vertical"
         android:hint="Enter participation code"
+        android:inputType="textCapCharacters"
         android:paddingStart="56dp"
         android:paddingVertical="2dp"
         android:paddingEnd="30dp"
