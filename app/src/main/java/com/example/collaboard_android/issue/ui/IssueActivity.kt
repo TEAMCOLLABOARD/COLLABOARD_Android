@@ -39,6 +39,7 @@ class IssueActivity : AppCompatActivity() {
     private var repo = ""
     var selectedLabels = ""
     var selectedAssignees = ""
+    private lateinit var retrofit: Retrofit
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,6 +51,9 @@ class IssueActivity : AppCompatActivity() {
         // BoardActivity.kt에서 intent 값 받아오기
         owner = intent.getStringExtra("owner").toString()
         repo = intent.getStringExtra("repo").toString()
+
+        println("owner: $owner")
+        println("repo: $repo")
 
         binding.btnCreate.setOnClickListener {
 
@@ -66,6 +70,7 @@ class IssueActivity : AppCompatActivity() {
             finish()
         }
 
+        retrofit = retrofitBuilder()
         getIssueLabels()
         getIssueAssignees()
     }
@@ -82,9 +87,6 @@ class IssueActivity : AppCompatActivity() {
     private fun getIssueLabels() {
 
         labelList = ArrayList()
-
-        // Retrofit 객체 생성
-        val retrofit = retrofitBuilder()
 
         // retrofit 객체 통해 인터페이스 생성
         val server: RequestIssueLabels = retrofit.create(RequestIssueLabels::class.java)
@@ -146,9 +148,6 @@ class IssueActivity : AppCompatActivity() {
     private fun getIssueAssignees() {
         assigneesList = ArrayList()
 
-        // Retrofit 객체 생성
-        val retrofit = retrofitBuilder()
-
         // retrofit 객체 통해 인터페이스 생성
         val server: RequestIssueAssignees = retrofit.create(RequestIssueAssignees::class.java)
 
@@ -208,8 +207,6 @@ class IssueActivity : AppCompatActivity() {
     }
 
     private fun creatIssue() {
-        // Retrofit 객체 생성
-        val retrofit = retrofitBuilder()
 
         // retrofit 객체 통해 인터페이스 생성
         val server: GitHubService = retrofit.create(GitHubService::class.java)

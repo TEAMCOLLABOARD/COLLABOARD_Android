@@ -6,6 +6,6 @@
     android:includeFontPadding="false"
     android:paddingVertical="14dp"
     android:paddingStart="14dp"
-    android:paddingEnd="80dp"
+    android:paddingEnd="40dp"
     android:textColor="@color/white"
     android:textSize="13sp" />
