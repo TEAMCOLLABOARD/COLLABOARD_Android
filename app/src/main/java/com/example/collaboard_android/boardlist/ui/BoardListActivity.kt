@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.InputFilter
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -56,6 +57,8 @@ class BoardListActivity : AppCompatActivity() {
 
         initUserProfile()
 
+        capitalizePartCode()
+
         goToSettingActivity()
 
         goToInboxActivity()
@@ -100,6 +103,11 @@ class BoardListActivity : AppCompatActivity() {
         Glide.with(this)
             .load(PROFILE_IMG)
             .into(binding.imgProfile)
+    }
+
+    private fun capitalizePartCode() {
+        val inputFilter = InputFilter.AllCaps()
+        binding.etParticipationCode.filters = arrayOf(inputFilter)
     }
 
     private fun goToSettingActivity() {
