@@ -36,7 +36,7 @@
         android:layout_height="0dp"
         android:layout_marginHorizontal="36dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.65"
+        app:layout_constraintHeight_percent="0.75"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar">
 
@@ -56,6 +56,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="spread" />
 
+        <!--title-->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintlayout_title"
             android:layout_width="match_parent"
@@ -124,11 +125,12 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <!--description-->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintlayout_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="60dp"
+            android:layout_marginTop="40dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
@@ -154,13 +156,13 @@
                 android:layout_marginTop="18dp"
                 android:layout_marginEnd="5dp"
                 android:autofillHints=""
-                android:paddingHorizontal="10dp"
                 android:background="@drawable/background_issue_edittext"
                 android:clickable="true"
                 android:focusable="true"
                 android:fontFamily="@font/notosanskrmedium"
                 android:includeFontPadding="false"
                 android:inputType="text"
+                android:paddingHorizontal="10dp"
                 android:singleLine="true"
                 android:textColor="@color/white"
                 android:textSize="16sp"
@@ -171,126 +173,129 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraintlayout_assignees"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:id="@+id/linearlayout_assignees_labels"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="60dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/constraintlayout_labels"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="40dp"
+            android:orientation="horizontal"
             app:layout_constraintTop_toBottomOf="@+id/constraintlayout_description">
 
-            <TextView
-                android:id="@+id/tv_assignees"
-                android:layout_width="150dp"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/notosanskrregular"
-                android:includeFontPadding="false"
-                android:text="Assignees"
-                android:textColor="@color/white"
-                android:textSize="14sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
+            <!--assignees-->
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/constraintlayout_assignees_spinner"
-                android:layout_width="wrap_content"
+                android:id="@+id/constraintlayout_assignees"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="18dp"
-                android:background="@drawable/background_spinner"
-                android:visibility="invisible"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_assignees">
+                android:layout_weight="1">
 
-                <Spinner
-                    android:id="@+id/spinner_assignees"
-                    android:layout_width="wrap_content"
+                <TextView
+                    android:id="@+id/tv_assignees"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
-                    android:background="@android:color/transparent"
-                    android:popupBackground="@drawable/background_spinner"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    android:fontFamily="@font/notosanskrregular"
+                    android:includeFontPadding="false"
+                    android:text="Assignees"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <ImageView
-                    android:layout_width="12dp"
-                    android:layout_height="12dp"
-                    android:layout_marginEnd="14dp"
-                    android:rotation="270"
-                    android:src="@drawable/btn_back_white"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintDimensionRatio="1:1"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constraintlayout_assignees_spinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="18dp"
+                    android:background="@drawable/background_spinner"
+                    android:visibility="invisible"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_assignees">
+
+                    <Spinner
+                        android:id="@+id/spinner_assignees"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:popupBackground="@drawable/background_spinner"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageView
+                        android:layout_width="12dp"
+                        android:layout_height="12dp"
+                        android:layout_marginEnd="14dp"
+                        android:rotation="270"
+                        android:src="@drawable/btn_back_white"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintDimensionRatio="1:1"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraintlayout_labels"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="60dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintLeft_toRightOf="@+id/constraintlayout_assignees"
-            app:layout_constraintTop_toBottomOf="@+id/constraintlayout_description">
-
-            <TextView
-                android:id="@+id/tv_labels"
-                android:layout_width="150dp"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/notosanskrregular"
-                android:includeFontPadding="false"
-                android:text="Labels"
-                android:textColor="@color/white"
-                android:textSize="14sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
+            <!--labels-->
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/constraintlayout_labels_spinner"
-                android:layout_width="wrap_content"
+                android:id="@+id/constraintlayout_labels"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="18dp"
-                android:background="@drawable/background_spinner"
-                android:visibility="invisible"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_labels">
+                android:layout_weight="1">
 
-                <Spinner
-                    android:id="@+id/spinner_labels"
-                    android:layout_width="wrap_content"
+                <TextView
+                    android:id="@+id/tv_labels"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
-                    android:background="@android:color/transparent"
-                    android:popupBackground="@drawable/background_spinner"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    android:fontFamily="@font/notosanskrregular"
+                    android:includeFontPadding="false"
+                    android:text="Labels"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <ImageView
-                    android:layout_width="12dp"
-                    android:layout_height="12dp"
-                    android:layout_marginEnd="14dp"
-                    android:rotation="270"
-                    android:src="@drawable/btn_back_white"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintDimensionRatio="1:1"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constraintlayout_labels_spinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="18dp"
+                    android:background="@drawable/background_spinner"
+                    android:visibility="invisible"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_labels">
+
+                    <Spinner
+                        android:id="@+id/spinner_labels"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:popupBackground="@drawable/background_spinner"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageView
+                        android:layout_width="12dp"
+                        android:layout_height="12dp"
+                        android:layout_marginEnd="14dp"
+                        android:rotation="270"
+                        android:src="@drawable/btn_back_white"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintDimensionRatio="1:1"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <!--create button-->
     <TextView
         android:id="@+id/btn_create"
         android:layout_width="match_parent"

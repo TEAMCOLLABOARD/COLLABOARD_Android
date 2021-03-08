@@ -2,12 +2,10 @@
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:textColor="@color/black_description"
-    android:textSize="13dp"
     android:fontFamily="@font/notosanskrregular"
     android:includeFontPadding="false"
     android:paddingVertical="14dp"
-    android:paddingLeft="14dp"
     android:paddingStart="14dp"
-    android:paddingRight="80dp"
-    android:paddingEnd="80dp" />
+    android:paddingEnd="80dp"
+    android:textColor="@color/white"
+    android:textSize="13sp" />
