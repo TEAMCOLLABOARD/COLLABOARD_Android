@@ -20,6 +20,7 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.ResponseBody
+import org.json.JSONArray
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
@@ -37,6 +38,7 @@ class IssueActivity : AppCompatActivity() {
 
     private var owner = ""
     private var repo = ""
+//    private lateinit var selectedLabels: ArrayList<String>
     var selectedLabels = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,7 +71,6 @@ class IssueActivity : AppCompatActivity() {
     }
 
     private fun getIssueLabels() {
-        println("getIssueLabels 호출됨")
 
         labelList = ArrayList()
 
@@ -115,16 +116,24 @@ class IssueActivity : AppCompatActivity() {
     }
 
     private fun labelsAdapter() {
-        println("labelsAdapter 호출됨")
+//        selectedLabels = ArrayList() // 초기화
+
         binding.constraintlayoutLabelsSpinner.visibility = View.VISIBLE
         val labelsAdapter = ArrayAdapter(this, R.layout.item_label_spinner, labelList)
         binding.spinnerLabels.adapter = labelsAdapter
         binding.spinnerLabels.setSelection(0)
 
-        binding.spinnerLabels.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        binding.spinnerLabels.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
                 selectedLabels = labelList[position]
+//                selectedLabels.add(labelList[position])
             }
+
             override fun onNothingSelected(p0: AdapterView<*>?) {}
         }
     }
@@ -141,8 +150,18 @@ class IssueActivity : AppCompatActivity() {
 
         // json 타입의 Body 생성
         val jsonObject = JSONObject()
+        val jsonArray = JSONArray()
+//        val jsonArray = JSONObject()
         jsonObject.put("title", binding.etTitle.text.toString())
         jsonObject.put("body", binding.etDescription.text.toString())
+        jsonArray.put(selectedLabels)
+        jsonObject.put("labels", jsonArray)
+//        jsonArray.put("labels", selectedLabels.toString())
+
+//        for (i in 0 until selectedLabels.size) {
+//            println("항목: " + selectedLabels[i])
+//            jsonArray.put(i, jsonObject.put("labels", selectedLabels[i]).toString())
+//        }
 
         val requestBody: RequestBody =
             jsonObject.toString().toRequestBody("application/json".toMediaTypeOrNull())
