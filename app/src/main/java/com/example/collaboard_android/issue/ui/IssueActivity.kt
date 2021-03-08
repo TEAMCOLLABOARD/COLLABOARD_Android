@@ -179,8 +179,7 @@ class IssueActivity : AppCompatActivity() {
                                 "issueActivity",
                                 "success: ${it.title}, message: ${response.message()}"
                             )
-                            val myIntent = Intent(this@IssueActivity, MainActivity::class.java)
-                            startActivity(myIntent)
+                            finish()
                         } ?: showError(response.errorBody())
                 }
             })
