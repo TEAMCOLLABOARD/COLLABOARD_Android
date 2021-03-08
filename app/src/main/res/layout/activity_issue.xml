@@ -209,7 +209,7 @@
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/constraintlayout_assignees_spinner"
-                    android:layout_width="wrap_content"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="18dp"
                     android:background="@drawable/background_spinner"
@@ -219,7 +219,7 @@
 
                     <Spinner
                         android:id="@+id/spinner_assignees"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@android:color/transparent"
                         android:popupBackground="@drawable/background_spinner"
@@ -260,23 +260,23 @@
                     android:text="Labels"
                     android:textColor="@color/white"
                     android:textSize="14sp"
-                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:ignore="HardcodedText" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/constraintlayout_labels_spinner"
-                    android:layout_width="wrap_content"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="18dp"
                     android:background="@drawable/background_spinner"
                     android:visibility="invisible"
-                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_labels">
 
                     <Spinner
                         android:id="@+id/spinner_labels"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@android:color/transparent"
                         android:popupBackground="@drawable/background_spinner"
