@@ -125,7 +125,7 @@ class IssueActivity : AppCompatActivity() {
 
     private fun labelsAdapter() {
 
-        val labelsAdapter = ArrayAdapter(this, R.layout.item_label_spinner, labelList)
+        val labelsAdapter = ArrayAdapter(this, R.layout.item_issue_label_spinner, labelList)
 
         binding.constraintlayoutLabelsSpinner.visibility = View.VISIBLE
         binding.spinnerLabels.adapter = labelsAdapter
