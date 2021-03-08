@@ -185,7 +185,7 @@ class IssueActivity : AppCompatActivity() {
     }
 
     private fun assigneesAdapter() {
-        val assigneesAdapter = ArrayAdapter(this, R.layout.item_label_spinner, assigneesList)
+        val assigneesAdapter = ArrayAdapter(this, R.layout.item_issue_label_spinner, assigneesList)
 
         binding.constraintlayoutAssigneesSpinner.visibility = View.VISIBLE
         binding.spinnerAssignees.adapter = assigneesAdapter
