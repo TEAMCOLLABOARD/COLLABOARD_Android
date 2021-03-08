@@ -179,6 +179,11 @@ class IssueActivity : AppCompatActivity() {
                                 "issueActivity",
                                 "success: ${it.title}, message: ${response.message()}"
                             )
+                            Toast.makeText(
+                                this@IssueActivity,
+                                "Issue created successfully!",
+                                Toast.LENGTH_SHORT
+                            ).show()
                             finish()
                         } ?: showError(response.errorBody())
                 }
