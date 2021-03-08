@@ -33,12 +33,10 @@ class IssueActivity : AppCompatActivity() {
     private lateinit var labelList: ArrayList<String>
     private lateinit var assigneesList: ArrayList<String>
 
-    //    var server: GitHubService? = null
     private lateinit var binding: ActivityIssueBinding
 
     private var owner = ""
     private var repo = ""
-//    private lateinit var selectedLabels: ArrayList<String>
     var selectedLabels = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -116,7 +114,6 @@ class IssueActivity : AppCompatActivity() {
     }
 
     private fun labelsAdapter() {
-//        selectedLabels = ArrayList() // 초기화
 
         binding.constraintlayoutLabelsSpinner.visibility = View.VISIBLE
         val labelsAdapter = ArrayAdapter(this, R.layout.item_label_spinner, labelList)
@@ -131,7 +128,6 @@ class IssueActivity : AppCompatActivity() {
                 id: Long
             ) {
                 selectedLabels = labelList[position]
-//                selectedLabels.add(labelList[position])
             }
 
             override fun onNothingSelected(p0: AdapterView<*>?) {}
@@ -151,17 +147,11 @@ class IssueActivity : AppCompatActivity() {
         // json 타입의 Body 생성
         val jsonObject = JSONObject()
         val jsonArray = JSONArray()
-//        val jsonArray = JSONObject()
+
         jsonObject.put("title", binding.etTitle.text.toString())
         jsonObject.put("body", binding.etDescription.text.toString())
         jsonArray.put(selectedLabels)
         jsonObject.put("labels", jsonArray)
-//        jsonArray.put("labels", selectedLabels.toString())
-
-//        for (i in 0 until selectedLabels.size) {
-//            println("항목: " + selectedLabels[i])
-//            jsonArray.put(i, jsonObject.put("labels", selectedLabels[i]).toString())
-//        }
 
         val requestBody: RequestBody =
             jsonObject.toString().toRequestBody("application/json".toMediaTypeOrNull())
