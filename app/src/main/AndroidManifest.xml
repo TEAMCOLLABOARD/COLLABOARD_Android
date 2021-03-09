@@ -23,7 +23,7 @@
             android:theme="@style/Theme.boardTheme" />
         <activity
             android:name=".login.ui.SignInOutActivity"
-            android:theme="@style/Theme.boardTheme">
+            android:theme="@style/Theme.InboxTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
