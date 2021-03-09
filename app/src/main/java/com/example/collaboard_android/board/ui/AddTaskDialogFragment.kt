@@ -1,17 +1,14 @@
 package com.example.collaboard_android.board.ui
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.KeyEvent.KEYCODE_ENTER
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.NumberPicker
@@ -19,6 +16,8 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import com.example.collaboard_android.R
 import com.example.collaboard_android.databinding.DialogAddTaskBinding
+import com.example.collaboard_android.util.hideKeyboard
+import com.example.collaboard_android.util.showKeyboard
 import java.util.*
 
 class AddTaskDialogFragment(val itemClick: (String, Int, IntArray) -> Unit) : DialogFragment() {
@@ -64,11 +63,11 @@ class AddTaskDialogFragment(val itemClick: (String, Int, IntArray) -> Unit) : Di
     private fun initEditImageButton() {
         binding.imgbtnEdit.setOnClickListener {
             setEditTextEnabled()
-            showKeyboard()
+            showKeyboard(context!!)
         }
         binding.etDescription.setOnTouchListener { _, _ ->
             setEditTextEnabled()
-            showKeyboard()
+            showKeyboard(context!!)
             true
         }
     }
@@ -84,16 +83,11 @@ class AddTaskDialogFragment(val itemClick: (String, Int, IntArray) -> Unit) : Di
         binding.viewUnderline.setBackgroundColor(ContextCompat.getColor(context!!, R.color.blue_main))
     }
 
-    private fun showKeyboard() {
-        val imm = context!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
-    }
-
     private fun setKeyListenerOnEditText() {
         binding.etDescription.setOnKeyListener { _, keyCode, _ ->
             if (keyCode == KEYCODE_ENTER || keyCode == EditorInfo.IME_ACTION_DONE) {
                 setEditTextDisabled()
-                hideKeyboard()
+                hideKeyboard(context!!, binding.etDescription)
                 return@setOnKeyListener true
             }
             false
@@ -107,11 +101,6 @@ class AddTaskDialogFragment(val itemClick: (String, Int, IntArray) -> Unit) : Di
             isCursorVisible = false
         }
         binding.viewUnderline.setBackgroundColor(ContextCompat.getColor(context!!, R.color.gray_divider))
-    }
-
-    private fun hideKeyboard() {
-        val imm = context!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(binding.etDescription.windowToken, 0)
     }
 
     private fun initLabelSpinner() {
@@ -288,7 +277,7 @@ class AddTaskDialogFragment(val itemClick: (String, Int, IntArray) -> Unit) : Di
         binding.buttonAdd.setOnClickListener {
             val pickData = intArrayOf(selectYear, selectMonth, selectDate)
             itemClick(binding.etDescription.text.toString(), selectLabel, pickData)
-
+            hideKeyboard(context!!, binding.etDescription)
             this.dismiss()
         }
     }
