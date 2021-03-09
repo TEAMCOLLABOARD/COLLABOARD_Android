@@ -10,6 +10,7 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import com.example.collaboard_android.R
 import com.example.collaboard_android.boardlist.data.ResponseRepoData
 import com.example.collaboard_android.databinding.ActivityCreateBoardBinding
@@ -158,8 +159,13 @@ class CreateBoardActivity : AppCompatActivity() {
             dialog_repo_name = selectRepo
             dialog_repo_full_name = selectRepoFullName
 
-            val partCodeDialog = ShowPartCodeDialogFragment()
-            partCodeDialog.show(supportFragmentManager, "show_part_code_dialog")
+            if (dialog_board_name == "") {
+                Toast.makeText(this, "Enter the board name", Toast.LENGTH_SHORT).show()
+            }
+            else {
+                val partCodeDialog = ShowPartCodeDialogFragment()
+                partCodeDialog.show(supportFragmentManager, "show_part_code_dialog")
+            }
         }
     }
 
