@@ -76,7 +76,10 @@ open class SignInOutActivity : AppCompatActivity() {
         webView.isHorizontalScrollBarEnabled = false
         webView.webViewClient = GithubWebViewClient()
         webView.settings.javaScriptEnabled = true
+        webView.settings.useWideViewPort = true // wide viewport 사용하도록 설정
+        webView.settings.loadWithOverviewMode = true // 컨텐츠가 웹뷰보다 클 경우 스크린 크기에 맞게 조정
         webView.loadUrl(url)
+
         githubdialog.setContentView(webView)
         githubdialog.show()
     }
@@ -101,9 +104,10 @@ open class SignInOutActivity : AppCompatActivity() {
     }
 
     // A client to know about WebView navigations
-    // For API >= 21
     @Suppress("OverridingDeprecatedMember")
     inner class GithubWebViewClient : WebViewClient() {
+
+        // API >= 21
         @TargetApi(Build.VERSION_CODES.LOLLIPOP)
         override fun shouldOverrideUrlLoading(
             view: WebView?,
@@ -121,7 +125,7 @@ open class SignInOutActivity : AppCompatActivity() {
             return false
         }
 
-        // For API <= 19
+        // API <= 19
         override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
             if (url.startsWith(GithubConstants.REDIRECT_URI)) {
                 handleUrl(url)
@@ -206,48 +210,70 @@ open class SignInOutActivity : AppCompatActivity() {
 
     private fun hasUidInDatabase(uid: String, jsonObject: JSONObject) {
         var flag = false
-        database.reference.child("users").addListenerForSingleValueEvent(object: ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val map: Map<String, *>? = snapshot.value as Map<String, *>?
-                val keySet: Set<String>? = map?.keys
-                val arrayList: ArrayList<String> = ArrayList()
-                if (keySet != null) {
-                    arrayList.addAll(keySet)
-                    Log.d("logoutTest", arrayList.toString())
-                }
-                for (i in 0 until arrayList.size) {
-                    // 해당 uid가 DB에 있을 경우
-                    if (arrayList[i] == uid) {
-                        flag = true
-                        database.reference.child("users").child(arrayList[i])
-                            .addListenerForSingleValueEvent(object: ValueEventListener {
-                                override fun onDataChange(snapshot: DataSnapshot) {
+        database.reference.child("users")
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val map: Map<String, *>? = snapshot.value as Map<String, *>?
+                    val keySet: Set<String>? = map?.keys
+                    val arrayList: ArrayList<String> = ArrayList()
+                    if (keySet != null) {
+                        arrayList.addAll(keySet)
+                        Log.d("logoutTest", arrayList.toString())
+                    }
+                    for (i in 0 until arrayList.size) {
+                        // 해당 uid가 DB에 있을 경우
+                        if (arrayList[i] == uid) {
+                            flag = true
+                            database.reference.child("users").child(arrayList[i])
+                                .addListenerForSingleValueEvent(object : ValueEventListener {
+                                    override fun onDataChange(snapshot: DataSnapshot) {
 
-                                    SharedPreferenceController.apply {
-                                        setProfileImg(applicationContext, snapshot.child("profileImg").value.toString())
-                                        setPushToken(applicationContext, snapshot.child("pushToken").value.toString())
-                                        setAccessToken(applicationContext, snapshot.child("token").value.toString())
-                                        setUid(applicationContext, snapshot.child("uid").value.toString())
-                                        setUserName(applicationContext, snapshot.child("userName").value.toString())
+                                        SharedPreferenceController.apply {
+                                            setProfileImg(
+                                                applicationContext,
+                                                snapshot.child("profileImg").value.toString()
+                                            )
+                                            setPushToken(
+                                                applicationContext,
+                                                snapshot.child("pushToken").value.toString()
+                                            )
+                                            setAccessToken(
+                                                applicationContext,
+                                                snapshot.child("token").value.toString()
+                                            )
+                                            setUid(
+                                                applicationContext,
+                                                snapshot.child("uid").value.toString()
+                                            )
+                                            setUserName(
+                                                applicationContext,
+                                                snapshot.child("userName").value.toString()
+                                            )
+                                        }
+
+                                        val intent = Intent(
+                                            this@SignInOutActivity,
+                                            BoardListActivity::class.java
+                                        )
+                                        intent.flags =
+                                            Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP or
+                                                    Intent.FLAG_ACTIVITY_CLEAR_TOP
+                                        startActivity(intent)
+                                        finish()
+
                                     }
 
-                                    val intent = Intent(this@SignInOutActivity, BoardListActivity::class.java)
-                                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP or
-                                            Intent.FLAG_ACTIVITY_CLEAR_TOP
-                                    startActivity(intent)
-                                    finish()
-
-                                }
-                                override fun onCancelled(error: DatabaseError) {}
-                            })
+                                    override fun onCancelled(error: DatabaseError) {}
+                                })
+                        }
                     }
+                    // 해당 uid가 DB에 없을 경우
+                    if (!flag)
+                        getUserInfo(jsonObject)
                 }
-                // 해당 uid가 DB에 없을 경우
-                if (!flag)
-                    getUserInfo(jsonObject)
-            }
-            override fun onCancelled(error: DatabaseError) {}
-        })
+
+                override fun onCancelled(error: DatabaseError) {}
+            })
     }
 
     private fun getUserInfo(jsonObject: JSONObject) {
@@ -289,7 +315,7 @@ open class SignInOutActivity : AppCompatActivity() {
         }
     }
 
-    private fun setPushToken(){
+    private fun setPushToken() {
         FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
             if (!task.isSuccessful) {
                 Log.d("fcm-pushToken", "fail")
