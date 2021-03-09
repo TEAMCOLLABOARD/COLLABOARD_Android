@@ -7,6 +7,7 @@ import android.text.InputFilter
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.collaboard_android.board.ui.BoardActivity
@@ -242,28 +243,41 @@ class BoardListActivity : AppCompatActivity() {
         var repoName = ""
         val boardCode = binding.etParticipationCode.text.toString().trim().toUpperCase(Locale.ROOT)
 
-        // info에서 해당 code에 해당하는 보드 이름 가져오기
-        databaseReference.child("board").child(boardCode).child("info")
-            .addListenerForSingleValueEvent(object: ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    boardName = snapshot.child("boardName").value.toString()
-                    repoName = snapshot.child("repo").value.toString()
+        // 참여코드를 입력하지 않은 경우
+        if (boardCode == "") {
+            Toast.makeText(this, "Enter the participation code", Toast.LENGTH_SHORT).show()
+        }
+        else {
+            // info에서 해당 code에 해당하는 보드 이름 가져오기
+            databaseReference.child("board").child(boardCode).child("info")
+                    .addListenerForSingleValueEvent(object: ValueEventListener {
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            // 참여코드에 해당하는 보드가 DB에 없을 경우
+                            if (!snapshot.exists()) {
+                                Toast.makeText(this@BoardListActivity,
+                                        "Invalid participation code", Toast.LENGTH_SHORT).show()
+                            }
+                            else {
+                                boardName = snapshot.child("boardName").value.toString()
+                                repoName = snapshot.child("repo").value.toString()
 
-                    // 보드 리스트에 해당 보드 추가
-                    databaseReference.child("users").child(UID)
-                            .child("boardlist").child(boardCode).setValue(boardName)
+                                // 보드 리스트에 해당 보드 추가
+                                databaseReference.child("users").child(UID)
+                                        .child("boardlist").child(boardCode).setValue(boardName)
 
-                    // 참여코드 입력을 통해 BoardActivity.kt로 이동
-                    val intent = Intent(this@BoardListActivity, BoardActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP or
-                            Intent.FLAG_ACTIVITY_CLEAR_TOP
-                    intent.putExtra("boardName", boardName)
-                    intent.putExtra("boardCode", boardCode)
-                    intent.putExtra("repoName", repoName)
-                    intent.putExtra("intentFrom", "ParticipationCode")
-                    startActivity(intent)
-                }
-                override fun onCancelled(error: DatabaseError) {}
-            })
+                                // 참여코드 입력을 통해 BoardActivity.kt로 이동
+                                val intent = Intent(this@BoardListActivity, BoardActivity::class.java)
+                                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP or
+                                        Intent.FLAG_ACTIVITY_CLEAR_TOP
+                                intent.putExtra("boardName", boardName)
+                                intent.putExtra("boardCode", boardCode)
+                                intent.putExtra("repoName", repoName)
+                                intent.putExtra("intentFrom", "ParticipationCode")
+                                startActivity(intent)
+                            }
+                        }
+                        override fun onCancelled(error: DatabaseError) {}
+                    })
+        }
     }
 }
