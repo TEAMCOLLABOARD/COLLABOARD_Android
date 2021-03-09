@@ -1,6 +1,5 @@
 package com.example.collaboard_android.boardlist.ui
 
-import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -8,7 +7,6 @@ import android.text.InputFilter
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.collaboard_android.board.ui.BoardActivity
@@ -21,6 +19,7 @@ import com.example.collaboard_android.util.SharedPreferenceController
 import com.google.firebase.database.*
 import com.example.collaboard_android.R
 import com.example.collaboard_android.inbox.ui.InboxActivity
+import com.example.collaboard_android.util.hideKeyboard
 import java.lang.StringBuilder
 import java.util.*
 import kotlin.collections.ArrayList
@@ -230,17 +229,12 @@ class BoardListActivity : AppCompatActivity() {
     private fun setKeyListenerOnEditText() {
         binding.etParticipationCode.setOnKeyListener { _, keyCode, _ ->
             if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == EditorInfo.IME_ACTION_DONE) {
-                hideKeyboard()
+                hideKeyboard(this, binding.etParticipationCode)
                 goToBoardActivity()
                 return@setOnKeyListener true
             }
             false
         }
-    }
-
-    private fun hideKeyboard() {
-        val imm = this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(binding.etParticipationCode.windowToken, 0)
     }
 
     private fun goToBoardActivity() {

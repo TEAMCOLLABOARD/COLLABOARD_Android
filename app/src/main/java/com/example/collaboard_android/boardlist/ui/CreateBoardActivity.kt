@@ -8,7 +8,6 @@ import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import com.example.collaboard_android.R
@@ -16,6 +15,8 @@ import com.example.collaboard_android.boardlist.data.ResponseRepoData
 import com.example.collaboard_android.databinding.ActivityCreateBoardBinding
 import com.example.collaboard_android.network.RequestToServer
 import com.example.collaboard_android.util.SharedPreferenceController
+import com.example.collaboard_android.util.hideKeyboard
+import com.example.collaboard_android.util.showKeyboard
 import okhttp3.ResponseBody
 import org.json.JSONObject
 import retrofit2.Call
@@ -63,11 +64,11 @@ class CreateBoardActivity : AppCompatActivity() {
     private fun initEditImageButton() {
         binding.imgbtnEdit.setOnClickListener {
             setEditTextEnabled()
-            showKeyboard()
+            showKeyboard(this)
         }
         binding.etBoardName.setOnTouchListener { _, _ ->
             setEditTextEnabled()
-            showKeyboard()
+            showKeyboard(this)
             true
         }
     }
@@ -82,16 +83,11 @@ class CreateBoardActivity : AppCompatActivity() {
         }
     }
 
-    private fun showKeyboard() {
-        val imm = this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
-    }
-
     private fun setKeyListenerOnEditText() {
         binding.etBoardName.setOnKeyListener { _, keyCode, _ ->
             if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == EditorInfo.IME_ACTION_DONE) {
                 setEditTextDisabled()
-                hideKeyboard()
+                hideKeyboard(this, binding.etBoardName)
                 return@setOnKeyListener true
             }
             false
@@ -103,11 +99,6 @@ class CreateBoardActivity : AppCompatActivity() {
             clearFocus()
             isCursorVisible = false
         }
-    }
-
-    private fun hideKeyboard() {
-        val imm = this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(binding.etBoardName.windowToken, 0)
     }
 
     private fun getRepoList() {

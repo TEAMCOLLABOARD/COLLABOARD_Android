@@ -1,7 +1,10 @@
 package com.example.collaboard_android.util
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.view.View
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import java.util.*
 
 /* 확장함수 */
@@ -77,4 +80,14 @@ fun View.setHeight(value: Int) {
         lp.height = value
         layoutParams = lp
     }
+}
+
+fun showKeyboard(context: Context) {
+    val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
+}
+
+fun hideKeyboard(context: Context, editText: EditText) {
+    val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    imm.hideSoftInputFromWindow(editText.windowToken, 0)
 }
