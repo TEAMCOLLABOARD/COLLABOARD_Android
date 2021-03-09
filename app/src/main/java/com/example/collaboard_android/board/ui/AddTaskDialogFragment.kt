@@ -12,6 +12,7 @@ import android.view.inputmethod.EditorInfo
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.NumberPicker
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import com.example.collaboard_android.R
@@ -275,10 +276,16 @@ class AddTaskDialogFragment(val itemClick: (String, Int, IntArray) -> Unit) : Di
 
     private fun initAddButton() {
         binding.buttonAdd.setOnClickListener {
-            val pickData = intArrayOf(selectYear, selectMonth, selectDate)
-            itemClick(binding.etDescription.text.toString(), selectLabel, pickData)
-            hideKeyboard(context!!, binding.etDescription)
-            this.dismiss()
+            if (binding.etDescription.text.toString() == "") {
+                Toast.makeText(context!!, "Enter a description", Toast.LENGTH_SHORT).show()
+                hideKeyboard(context!!, binding.etDescription)
+            }
+            else {
+                val pickData = intArrayOf(selectYear, selectMonth, selectDate)
+                itemClick(binding.etDescription.text.toString(), selectLabel, pickData)
+                hideKeyboard(context!!, binding.etDescription)
+                this.dismiss()
+            }
         }
     }
 
