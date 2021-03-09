@@ -32,7 +32,8 @@
         </activity>
         <activity
             android:name=".calendar.ui.CalendarActivity"
-            android:theme="@style/Theme.InboxTheme" />
+            android:theme="@style/Theme.InboxTheme"
+            android:windowSoftInputMode="stateAlwaysHidden"/>
         <activity
             android:name=".boardlist.ui.CreateBoardActivity"
             android:theme="@style/Theme.boardTheme" />

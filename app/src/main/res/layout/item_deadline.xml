@@ -13,6 +13,7 @@
         android:id="@+id/tv_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:layout_marginStart="18dp"
         android:background="@drawable/background_label_task"
         android:fontFamily="@font/notosanskrmedium"
@@ -23,19 +24,20 @@
         android:text="Test"
         android:textColor="@color/white"
         android:textSize="11sp"
-        tools:ignore="SmallSp" />
+        tools:ignore="SmallSp, HardcodedText" />
 
     <!--내용-->
     <TextView
         android:id="@+id/tv_calendar_content"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:gravity="center"
+        android:layout_gravity="center_vertical"
+        android:gravity="center_vertical"
         android:includeFontPadding="false"
         android:paddingStart="20dp"
+        android:paddingEnd="20dp"
         android:textColor="#576EAD"
         android:textSize="14sp"
-        android:textStyle="bold"
-        tools:ignore="RtlSymmetry" />
+        android:textStyle="bold" />
 
 </LinearLayout>
