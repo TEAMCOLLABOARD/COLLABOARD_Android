@@ -203,9 +203,7 @@ class BoardActivity : AppCompatActivity() {
     private fun initCalendarButton() {
         binding.imgbtnCalendar.setOnClickListener {
             val intent = Intent(this, CalendarActivity::class.java)
-//            intent.putExtra("boardName", BOARD_NAME)
             intent.putExtra("boardCode", BOARD_CODE)
-            intent.putExtra("uid", UID)
             startActivity(intent)
         }
     }
