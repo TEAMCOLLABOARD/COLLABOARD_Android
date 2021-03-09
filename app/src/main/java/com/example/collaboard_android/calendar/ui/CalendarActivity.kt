@@ -3,11 +3,15 @@ package com.example.collaboard_android.calendar.ui
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.collaboard_android.R
 import com.example.collaboard_android.calendar.adapter.DeadlineAdapter
 import com.example.collaboard_android.calendar.adapter.DeadlineDTO
 import com.example.collaboard_android.databinding.ActivityCalendarBinding
+import com.example.collaboard_android.util.SharedPreferenceController
 import com.google.firebase.database.*
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
@@ -27,9 +31,9 @@ class CalendarActivity : AppCompatActivity() {
     private var lastDay: Int = 0
 
     private var currentBoard = ""
-    private var uid = ""
 
     val calList = ArrayList<CalendarDay>()
+    var state: Boolean = true
 
     val database: FirebaseDatabase = FirebaseDatabase.getInstance() // 파이어베이스 데이터베이스 연동
 
@@ -41,6 +45,8 @@ class CalendarActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view) // binding 변수의 root 뷰를 가져와서 setContentView 메소드의 인자로 전달
 
+        hideTodoList()
+
         // 백버튼 클릭
         binding.imgbtnBackCalendar.setOnClickListener {
             finish()
@@ -50,11 +56,11 @@ class CalendarActivity : AppCompatActivity() {
         lastDay = getLastDay(year, month, day)
 
         currentBoard = intent.getStringExtra("boardCode").toString()
-        uid = intent.getStringExtra("uid").toString()
 
         getAllDeadline() // firebase에서 선택한 달의 모든 deadline 불러옴
 
-        deadline = database.getReference("users/$uid/deadline/$currentBoard") // DB 테이블 연결
+        deadline =
+            database.getReference("users/${SharedPreferenceController.getUid(this)}/deadline/$currentBoard") // DB 테이블 연결
 
         binding.rvCalendarDeadline.adapter = DeadlineAdapter(this, deadlineList)
         binding.rvCalendarDeadline.layoutManager = LinearLayoutManager(this)
@@ -64,6 +70,21 @@ class CalendarActivity : AppCompatActivity() {
         binding.splDeadline.setFadeOnClickListener {
             binding.splDeadline.panelState = SlidingUpPanelLayout.PanelState.COLLAPSED
         }
+
+        binding.splDeadline.addPanelSlideListener(object :
+            SlidingUpPanelLayout.PanelSlideListener {
+
+            override fun onPanelSlide(panel: View?, slideOffset: Float) {
+                binding.rvCalendarDeadline.scheduleLayoutAnimation() // item 애니메이션
+            }
+
+            override fun onPanelStateChanged(
+                panel: View?,
+                previousState: SlidingUpPanelLayout.PanelState?,
+                newState: SlidingUpPanelLayout.PanelState?
+            ) {
+            }
+        })
 
         // today 날짜 색상 적용
         binding.mcvCalendar.addDecorator(TodayDeco())
@@ -100,27 +121,10 @@ class CalendarActivity : AppCompatActivity() {
                     binding.rvCalendarDeadline.adapter?.notifyDataSetChanged()
 
                     if (deadlineList.isNotEmpty()) {
-//                        binding.linearlayoutDeadline.visibility = View.VISIBLE
-
-                        binding.tvTodo.isClickable = true
-
-                        binding.splDeadline.addPanelSlideListener(object :
-                            SlidingUpPanelLayout.PanelSlideListener {
-
-                            override fun onPanelSlide(panel: View?, slideOffset: Float) {
-                                binding.rvCalendarDeadline.scheduleLayoutAnimation() // item 애니메이션
-                            }
-
-                            override fun onPanelStateChanged(
-                                panel: View?,
-                                previousState: SlidingUpPanelLayout.PanelState?,
-                                newState: SlidingUpPanelLayout.PanelState?
-                            ) {
-                            }
-                        })
+                        showTodoList()
 
                     } else {
-                        binding.tvTodo.isClickable = false
+                        hideTodoList()
                     }
                 }
 
@@ -141,6 +145,24 @@ class CalendarActivity : AppCompatActivity() {
         }
     }
 
+    private fun showTodoList() {
+        if (!state) {
+            val animation: Animation =
+                AnimationUtils.loadAnimation(applicationContext, R.anim.item_animation_up)
+            binding.linearlayoutDeadline.startAnimation(animation)
+        }
+        state = true
+    }
+
+    private fun hideTodoList() {
+        if (state) {
+            val animation: Animation =
+                AnimationUtils.loadAnimation(applicationContext, R.anim.item_animation_down)
+            binding.linearlayoutDeadline.startAnimation(animation)
+        }
+        state = false
+    }
+
     // 선택한 달의 말일 계산
     private fun getLastDay(year: Int, month: Int, day: Int): Int {
         val lastDay: Calendar = Calendar.getInstance()
@@ -152,7 +174,8 @@ class CalendarActivity : AppCompatActivity() {
     // firebase에서 선택한 달의 모든 deadline 호출
     private fun getAllDeadline() {
 
-        deadline = database.getReference("users/$uid/deadline/$currentBoard")
+        deadline =
+            database.getReference("users/${SharedPreferenceController.getUid(this)}/deadline/$currentBoard")
 
         deadline.orderByChild("date").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
