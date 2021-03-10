@@ -52,15 +52,20 @@ class IssueActivity : AppCompatActivity() {
         owner = intent.getStringExtra("owner").toString()
         repo = intent.getStringExtra("repo").toString()
 
-        println("owner: $owner")
-        println("repo: $repo")
-
         binding.btnCreate.setOnClickListener {
 
             if (binding.etTitle.text.toString().trim().isNotEmpty()) {
-                creatIssue()
+
+                val dlg = CreateIssueDialog(this)
+
+                dlg.setOnOKClickedListener {
+                    // issue 생성
+                    creatIssue()
+                }
+                dlg.start(repo)
+
             } else {
-                Toast.makeText(applicationContext, "title을 입력해주세요", Toast.LENGTH_SHORT)
+                Toast.makeText(applicationContext, "Please write a title.", Toast.LENGTH_SHORT)
                     .show()
             }
         }
