@@ -39,7 +39,7 @@
                 android:id="@+id/img_logo_github"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:src="@drawable/ic_github_mark_light_32px"
+                android:src="@drawable/ic_github_mark_light_64px"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintDimensionRatio="1:1"
                 app:layout_constraintStart_toStartOf="parent"

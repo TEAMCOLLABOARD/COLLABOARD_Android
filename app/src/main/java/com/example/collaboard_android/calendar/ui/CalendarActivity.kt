@@ -1,6 +1,7 @@
 package com.example.collaboard_android.calendar.ui
 
 import android.annotation.SuppressLint
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.View
 import android.view.animation.Animation
@@ -14,6 +15,7 @@ import com.example.collaboard_android.databinding.ActivityCalendarBinding
 import com.example.collaboard_android.util.SharedPreferenceController
 import com.google.firebase.database.*
 import com.prolificinteractive.materialcalendarview.CalendarDay
+import com.prolificinteractive.materialcalendarview.format.MonthArrayTitleFormatter
 import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import java.util.*
 import kotlin.collections.ArrayList
@@ -88,6 +90,16 @@ class CalendarActivity : AppCompatActivity() {
 
         // today 날짜 색상 적용
         binding.mcvCalendar.addDecorator(TodayDeco())
+
+        // month 영어로 설정
+        binding.mcvCalendar.setTitleFormatter(MonthArrayTitleFormatter(resources.getTextArray(R.array.months_array)))
+
+        // weekdays 영어로 설정
+        val locale = Locale("en_US")
+        Locale.setDefault(locale)
+        val config = Configuration()
+        config.locale = locale
+        baseContext.applicationContext.resources.updateConfiguration(config, null)
 
         // 날짜 클릭
         binding.mcvCalendar.setOnDateChangedListener { widget, date, selected ->
