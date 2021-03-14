@@ -1,5 +1,7 @@
 package com.example.collaboard_android.board.ui
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -52,6 +54,8 @@ class BoardActivity : AppCompatActivity() {
         setPrefValue()
 
         getIntentValue()
+
+        clickRepoTitle()
 
         initIssueButton()
 
@@ -188,6 +192,15 @@ class BoardActivity : AppCompatActivity() {
                     }
                     override fun onCancelled(error: DatabaseError) {}
                 })
+    }
+
+    private fun clickRepoTitle() {
+        binding.tvRepoName.setOnClickListener {
+            val clipboardManager = this.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+            val clipData = ClipData.newPlainText("BOARD_CODE", BOARD_CODE)
+            clipboardManager.setPrimaryClip(clipData)
+            Toast.makeText(this, "Participation code copied", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun initIssueButton() {
