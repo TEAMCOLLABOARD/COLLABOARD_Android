@@ -11,7 +11,7 @@ class SplashActivity : Activity() {
 
     private lateinit var binding: ActivitySplashBinding
 
-    private val SPLASH_DISPLAY_LENGTH = 4237
+    private val SPLASH_DISPLAY_LENGTH = 5305
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
